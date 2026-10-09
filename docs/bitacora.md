@@ -13,8 +13,8 @@ su justificación y la evidencia real de `pytest` y `ruff check src`.
 
 | #  | Prompt usado | Cambio realizado | Justificación | Tests OK | Ruff (errores) | Commit |
 |----|--------------|------------------|---------------|----------|----------------|--------|
-| 0  | P-01, P-02 (ver abajo) | Configuración: `CLAUDE.md`, `.claudeignore`, `docs/bitacora.md`, `docs/reflexion.md` | Dar contexto y reglas a la IA antes de tocar código | 20 passed | 20 (sin cambios, `src/` intacto) | *(pendiente de aprobación)* |
-| 1  |              |                  |               |          |                |        |
+| 0  | P-01, P-02 (ver abajo) | Configuración: `CLAUDE.md`, `.claudeignore`, `docs/bitacora.md`, `docs/reflexion.md` | Dar contexto y reglas a la IA antes de tocar código | 20 passed | 20 (sin cambios, `src/` intacto) | `5d6389e` |
+| 1  | P-03 (ver abajo) | Higiene: quitar declaraciones `coding` (UP009×4), `import os` sin uso en `reportes` (F401) y ordenar imports de `main` (I001) | Ruido innecesario en Python 3; imports sin uso y desordenados dificultan la lectura | 20 passed | 20 → 14 | *(pendiente de aprobación)* |
 | 2  |              |                  |               |          |                |        |
 | 3  |              |                  |               |          |                |        |
 | 4  |              |                  |               |          |                |        |
@@ -153,6 +153,122 @@ Found 20 errors.
 ### Observaciones / errores detectados
 - El README pide `BITACORA.md` en la raíz; por instrucción del usuario se usa
   `docs/bitacora.md`. Pendiente decidir si se copia también a la raíz al final.
+- Sin errores en la fase.
+
+**Commit:** `5d6389e` — `chore: agregar configuración de Claude Code y documentos de trabajo`
+(archivos: `.claudeignore`, `CLAUDE.md`, `docs/bitacora.md`, `docs/reflexion.md`).
+
+---
+
+## Refactorización #1 — Higiene de código e imports (UP009, F401, I001)
+
+### Prompt utilizado
+
+**P-03:**
+
+> Autorizo iniciar exclusivamente la refactorización #1 del plan aprobado.
+>
+> Objetivo: mejorar la higiene del código y la organización de imports, corrigiendo las reglas UP009, F401 e I001 de Ruff.
+>
+> Instrucciones:
+> 1. Identifica los archivos y líneas que requieren cambios.
+> 2. Elimina únicamente declaraciones de codificación innecesarias e imports sin utilizar.
+> 3. Ordena los imports conforme a las convenciones de Python.
+> 4. No elimines funciones, clases, constantes ni lógica de negocio.
+> 5. No modifiques tests/ ni pyproject.toml.
+> 6. No cambies las interfaces públicas ni el comportamiento observable.
+>
+> Después de realizar los cambios:
+> - Ejecuta python -m pytest -q.
+> - Ejecuta python -m ruff check src --statistics.
+> - Ejecuta git diff para mostrar las diferencias.
+> - Actualiza docs/bitacora.md con el prompt utilizado, los cambios, la justificación y los resultados reales de ambas validaciones.
+> - Registra también el commit de la Fase 0: 5d6389e.
+>
+> No realices todavía el commit de la refactorización #1.
+>
+> Detente al finalizar y espera mi aprobación antes de continuar con cualquier otra refactorización.
+
+### Cambios realizados
+Las modificaciones se hicieron a mano con ediciones puntuales; no se usó `ruff --fix`.
+
+| Archivo | Línea original | Regla | Cambio |
+|---|---|---|---|
+| `src/gestor.py` | 1 | UP009 | Eliminada `# -*- coding: utf-8 -*-` |
+| `src/almacen.py` | 1 | UP009 | Eliminada `# -*- coding: utf-8 -*-` |
+| `src/reportes.py` | 1 | UP009 | Eliminada `# -*- coding: utf-8 -*-` |
+| `src/reportes.py` | 4 | F401 | Eliminado `import os` (no se usa en el módulo) |
+| `src/main.py` | 1 | UP009 | Eliminada `# -*- coding: utf-8 -*-` |
+| `src/main.py` | 4-6 | I001 | Imports ordenados alfabéticamente: `almacen`, `gestor`, `reportes` |
+
+No se eliminaron funciones, clases, constantes ni lógica. `tests/` y
+`pyproject.toml` sin cambios. `git diff --stat`: 4 archivos, 1 inserción, 7 eliminaciones.
+
+### Justificación
+- **UP009:** en Python 3 la codificación por defecto del código fuente es UTF-8
+  (PEP 3120), así que la declaración es redundante.
+- **F401:** un import sin uso confunde sobre las dependencias reales del módulo
+  y agrega una carga innecesaria.
+- **I001:** un orden consistente de imports (isort) facilita la lectura y
+  reduce conflictos en los merges.
+- **Comportamiento:** reordenar los imports de `main` no cambia nada porque
+  ninguno de los tres módulos tiene efectos secundarios al importarse que
+  dependan del orden (`almacen` y `reportes` ya importan `gestor` por su cuenta).
+  `os` no se usaba en `reportes`, lo que ruff confirma con F401.
+
+### Evidencia (2026-10-08)
+
+```text
+> .\.venv\Scripts\python -m pytest -q
+....................                                                     [100%]
+20 passed in 0.04s
+
+> .\.venv\Scripts\python -m ruff check src --statistics
+3	SIM102	[ ] collapsible-if
+3	SIM115	[ ] open-file-with-context-handler
+2	C901  	[ ] complex-structure
+2	N802  	[ ] invalid-function-name
+1	SIM108	[ ] if-else-block-instead-of-if-exp
+1	N816  	[ ] mixed-case-variable-in-global-scope
+1	SIM103	[ ] needless-bool
+1	UP015 	[*] redundant-open-modes
+Found 14 errors.
+```
+
+```diff
+--- a/src/almacen.py
++++ b/src/almacen.py
+-# -*- coding: utf-8 -*-
+ """Persistencia del gestor: carga y guardado de datos en JSON."""
+--- a/src/gestor.py
++++ b/src/gestor.py
+-# -*- coding: utf-8 -*-
+ """Modulo principal del gestor de inventario y ventas de "La Esquina".
+--- a/src/main.py
++++ b/src/main.py
+-# -*- coding: utf-8 -*-
+ """Punto de entrada del gestor de tienda (menu interactivo en consola)."""
+ 
+-import gestor
+ import almacen
++import gestor
+ import reportes
+--- a/src/reportes.py
++++ b/src/reportes.py
+-# -*- coding: utf-8 -*-
+ """Reportes de la tienda: inventario, ventas y mas vendidos."""
+ 
+-import os
+-
+ import gestor
+```
+
+### Observaciones / errores detectados
+- Las 6 infracciones objetivo (UP009×4, F401, I001) desaparecieron; las otras
+  14 siguen igual, con los números de línea desplazados en -1 (o -3 en
+  `reportes.py` a partir de la línea 4).
+- Git avisa que los saltos de línea LF pasarán a CRLF (configuración de Git en
+  Windows); el contenido no cambia.
 - Sin errores en la fase.
 
 **Commit:** *(pendiente de aprobación)*

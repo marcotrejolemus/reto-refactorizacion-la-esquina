@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
 """Reportes de la tienda: inventario, ventas y mas vendidos."""
-
-import os
 
 import gestor
 
