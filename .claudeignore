@@ -1,0 +1,30 @@
+# .claudeignore — archivos que Claude no necesita leer en este proyecto
+#
+# AVISO: este archivo NO es un mecanismo de control de acceso efectivo en
+# Claude Code; documenta la intención de excluir estas rutas. Para bloquear
+# lecturas de forma real deben usarse reglas `permissions.deny` en
+# `.claude/settings.json` (por ejemplo: "Read(./.venv/**)", "Read(./.env)").
+#
+# datos_ejemplo.json NO se excluye: es un dato fuente del proyecto.
+
+# Entorno virtual
+.venv/
+venv/
+
+# Cachés de Python y herramientas
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# Secretos y archivos del sistema
+.env
+.DS_Store
+
+# Metadatos de git
+.git/
+
+# Datos generados durante pruebas manuales o caracterización
+*.tmp
+*.log
+salida_*.txt
