@@ -14,8 +14,8 @@ su justificación y la evidencia real de `pytest` y `ruff check src`.
 | #  | Prompt usado | Cambio realizado | Justificación | Tests OK | Ruff (errores) | Commit |
 |----|--------------|------------------|---------------|----------|----------------|--------|
 | 0  | P-01, P-02 (ver abajo) | Configuración: `CLAUDE.md`, `.claudeignore`, `docs/bitacora.md`, `docs/reflexion.md` | Dar contexto y reglas a la IA antes de tocar código | 20 passed | 20 (sin cambios, `src/` intacto) | `5d6389e` |
-| 1  | P-03 (ver abajo) | Higiene: quitar declaraciones `coding` (UP009×4), `import os` sin uso en `reportes` (F401) y ordenar imports de `main` (I001) | Ruido innecesario en Python 3; imports sin uso y desordenados dificultan la lectura | 20 passed | 20 → 14 | *(pendiente de aprobación)* |
-| 2  |              |                  |               |          |                |        |
+| 1  | P-03 (ver abajo) | Higiene: quitar declaraciones `coding` (UP009×4), `import os` sin uso en `reportes` (F401) y ordenar imports de `main` (I001) | Ruido innecesario en Python 3; imports sin uso y desordenados dificultan la lectura | 20 passed | 20 → 14 | `4cedd85` |
+| 2  | P-04 a P-08 (ver abajo) | Renombres PEP 8 (`contador_ventas`, `hay_archivo`, `reporte_viejo_csv`, `formatear_moneda`), variables descriptivas y constantes de negocio (descuentos, VIP, IVA, stock mínimo, formato de fecha) | Nombres que revelan intención; reglas de negocio con un solo punto de definición | 20 passed; caracterización idéntica (SHA-256) | 14 → 9 | *(pendiente de aprobación)* |
 | 3  |              |                  |               |          |                |        |
 | 4  |              |                  |               |          |                |        |
 | 5  |              |                  |               |          |                |        |
@@ -270,5 +270,236 @@ Found 14 errors.
 - Git avisa que los saltos de línea LF pasarán a CRLF (configuración de Git en
   Windows); el contenido no cambia.
 - Sin errores en la fase.
+
+**Commit:** `4cedd85` — `refactor: eliminar declaraciones de codificación e imports sin uso y ordenar imports`
+
+---
+
+## Refactorización #2 — Nombres descriptivos y constantes de negocio
+
+### Prompts utilizados
+
+**P-04 (autorización inicial):**
+
+> Autorizo iniciar exclusivamente la Refactorización #2: nombres descriptivos y constantes de negocio.
+>
+> Apruebo los renombres propuestos:
+> - contadorVentas → contador_ventas
+> - hayArchivo → hay_archivo
+> - reporteViejoCSV → reporte_viejo_csv
+>
+> Antes de aplicarlos, identifica todas sus referencias en el proyecto y documenta cualquier impacto potencial de compatibilidad. Actualiza las referencias internas correspondientes.
+>
+> Condiciones obligatorias:
+> 1. Mantener agregarProducto y buscarProducto sin cambios de nombre ni firma.
+> 2. Sustituir variables poco descriptivas por nombres significativos.
+> 3. Introducir constantes para las reglas de descuentos, IVA y stock.
+> 4. Conservar exactamente los valores, cálculos, retornos y formatos actuales.
+> 5. No eliminar código heredado durante esta etapa.
+> 6. No modificar tests/ ni pyproject.toml.
+> 7. No iniciar ninguna otra refactorización.
+>
+> Al terminar:
+> - Ejecuta las 20 pruebas con pytest.
+> - Ejecuta Ruff y registra el número real de errores restantes.
+> - Revisa y presenta git diff.
+> - Actualiza docs/bitacora.md con el prompt, modificaciones, justificación y resultados reales.
+> - Detente antes del commit y solicita mi aprobación.
+>
+> No continúes con la Refactorización #3 sin mi autorización.
+
+**P-05 (revisión de los scripts de caracterización antes de ejecutarlos):**
+
+> Antes de autorizar la ejecución de las pruebas de caracterización, muéstrame el contenido completo de los archivos caracterizar.py y menu_entrada.txt que pretendes utilizar.
+>
+> Explica qué operaciones realizarán, qué archivos crearán o modificarán y cómo garantizas que no se alterará el proyecto original.
+>
+> No ejecutes todavía estos scripts ni modifiques archivos de src/, tests/ o pyproject.toml.
+>
+> Una vez revisado el contenido, te autorizaré continuar.
+
+**P-06 (autorización de la caracterización inicial):**
+
+> He revisado los scripts caracterizar.py y menu_entrada.txt.
+>
+> Autorizo ejecutar las pruebas de caracterización sobre el código actual, utilizando exclusivamente los directorios temporales indicados.
+>
+> Instrucciones:
+>
+> 1. Ejecuta la caracterización inicial y conserva los resultados como línea base.
+> 2. Confirma que las salidas se guardaron correctamente y que el repositorio Git permanece limpio.
+> 3. Documenta cualquier error de ejecución o codificación UTF-8.
+> 4. No modifiques src/, tests/ ni pyproject.toml durante esta ejecución.
+> 5. No inicies todavía la Refactorización #2.
+>
+> Presenta los resultados y espera mi autorización antes de modificar el código.
+
+**P-07 (verificación con comandos simples, tras un comando rechazado):**
+
+> La verificación anterior fue rechazada porque Claude Code detectó un error de sintaxis en PowerShell: "Missing closing ')' in expression".
+>
+> Por favor, realiza las verificaciones con comandos simples, separados y sin subexpresiones complejas.
+>
+> 1. Confirma que las ejecuciones iniciales de caracterizar.py y main.py terminaron correctamente. Revisa los códigos de salida y los archivos de errores.
+> 2. Verifica que existen antes_caracterizacion.txt y antes_menu.txt y que contienen resultados válidos.
+> 3. Calcula el hash SHA-256 de cada archivo con comandos Get-FileHash separados.
+> 4. Ejecuta git status --short para comprobar que el repositorio permanece limpio.
+> 5. Comprueba que datos_ejemplo.json no presenta modificaciones.
+> 6. Confirma que src/, tests/ y pyproject.toml permanecen sin cambios.
+>
+> No repitas las pruebas si ya terminaron correctamente.
+>
+> No modifiques código fuente ni inicies todavía la Refactorización #2.
+>
+> Presenta un resumen de los resultados y espera mi aprobación.
+
+**P-08 (autorización de la implementación):**
+
+> Autorizo iniciar exclusivamente la Refactorización #2: nombres descriptivos y constantes de negocio, conforme al plan aprobado.
+>
+> Utiliza los resultados de caracterización que acabamos de generar como línea base.
+>
+> Condiciones:
+> 1. Mantener las funciones públicas agregarProducto y buscarProducto sin cambios de nombre.
+> 2. Realizar los renombres aprobados y actualizar sus referencias internas. Documentar cualquier incompatibilidad potencial con consumidores externos.
+> 3. Sustituir variables poco descriptivas por nombres significativos.
+> 4. Introducir constantes para descuentos, IVA y límites de stock sin alterar valores ni operaciones matemáticas.
+> 5. Conservar los comportamientos identificados de ultimo_error, el valor entero 0 del descuento y las condiciones VIP.
+> 6. No eliminar funciones heredadas ni modificar tests/ o pyproject.toml.
+> 7. No comenzar la Refactorización #3.
+>
+> Al finalizar:
+> - Ejecuta pytest.
+> - Ejecuta Ruff.
+> - Repite ambas pruebas de caracterización.
+> - Compara los resultados posteriores contra los archivos originales utilizando sus contenidos o hashes SHA-256.
+> - Documenta cualquier diferencia, incluso si parece menor.
+> - Revisa git diff y actualiza docs/bitacora.md.
+>
+> Detente antes del commit y espera mi autorización.
+
+### Inventario de referencias e impacto de compatibilidad
+
+Búsqueda realizada antes de editar (`src/`, `tests/`, raíz; excluido `.venv/`):
+
+| Nombre anterior | Nombre nuevo | Referencias internas actualizadas | En `tests/` | Impacto externo potencial |
+|---|---|---|---|---|
+| `gestor.contadorVentas` | `gestor.contador_ventas` | `gestor.py` (6), `almacen.py` (2) | No | Código externo que lea o escriba `gestor.contadorVentas` dejaría de ver el folio real (lectura: `AttributeError`; escritura: crearía un atributo nuevo sin efecto). La clave JSON `"contador"` **no cambia**, así que los archivos guardados siguen siendo compatibles. |
+| `almacen.hayArchivo` | `almacen.hay_archivo` | `main.py:22` | No | Llamadas externas a `hayArchivo` lanzarían `AttributeError`. |
+| `reportes.reporteViejoCSV` | `reportes.reporte_viejo_csv` | Ninguna (no se llama en el proyecto) | No | Llamadas externas lanzarían `AttributeError`. La función **se conserva**. |
+| `reportes.hacer_cosa` | `reportes.formatear_moneda` | `reportes.py` (4 usos) | No | Llamadas externas lanzarían `AttributeError`. Renombre incluido en el plan aprobado (v2, paso 2). |
+
+No se agregaron alias con el nombre viejo: un alias en camelCase volvería a
+activar N802/N816 y el reto exige `ruff check src` sin errores.
+
+### Cambios realizados
+
+**`src/gestor.py`**
+- Constantes nuevas (mismos valores literales que antes): `UMBRAL_DESCUENTO_ALTO = 1000`,
+  `TASA_DESCUENTO_ALTO = 0.10`, `UMBRAL_DESCUENTO_MEDIO = 500`,
+  `TASA_DESCUENTO_MEDIO = 0.05`, `PREFIJO_VIP = "VIP"`, `MONTO_MINIMO_VIP = 200`,
+  `TASA_DESCUENTO_VIP = 0.02`, `TASA_IVA = 0.16`, `FORMATO_FECHA = "%Y-%m-%d %H:%M:%S"`.
+- `contadorVentas` → `contador_ventas`.
+- Variables: `x` → `producto`, `aux` → `nuevo_stock` / `subtotal`, `temp2` → `encontrados` / `producto`,
+  `k` → `codigo`, `desc` → `descuento`, `t` → `ticket`.
+- La condición VIP pasa de `len(cliente) >= 3` y `cliente[0:3] == "VIP"` a
+  `len(cliente) >= len(PREFIJO_VIP)` y `cliente[0:len(PREFIJO_VIP)] == PREFIJO_VIP`
+  (equivalente, porque `len("VIP") == 3`).
+- Se conservan: la estructura de `if` anidados (se atiende en #4/#5), `descuento = 0`
+  como **entero**, la condición estricta `> MONTO_MINIMO_VIP`, el orden de las
+  operaciones (`base * TASA_IVA`, `round(base + impuesto, 2)`, `base + base * TASA_IVA`
+  en `cotizar`) y el comportamiento de `ultimo_error` (no se limpia en operaciones exitosas).
+- **Sin cambios**: `calcular_descuento_viejo`, `exportar_txt` (comentado) y `MODO_DEBUG`,
+  por ser código heredado (no se le introdujeron constantes para no alterarlo).
+
+**`src/almacen.py`**: `d` → `datos`, `f` → `archivo`, `k` → `codigo`, `v` → `venta`;
+`gestor.contadorVentas` → `gestor.contador_ventas`; `hayArchivo` → `hay_archivo` con
+`return os.path.exists(ruta)` (SIM103; `os.path.exists` ya regresa `bool`). El `open`
+sin `with` y el `except Exception` se dejan para la #3.
+
+**`src/reportes.py`**: constante `STOCK_MINIMO = 5` (usada en `productos_stock_bajo` y
+`reporte_inventario`); `hacer_cosa(v)` → `formatear_moneda(valor)`;
+`reporteViejoCSV` → `reporte_viejo_csv`; variables `s` → `texto`, `t` → `total`,
+`aux` → `valor_total` / `unidades_por_codigo`, `temp` → `ranking`, `p` → `producto`,
+`v` → `venta`. Algunas concatenaciones se partieron en dos líneas por el límite de
+88 caracteres; el texto resultante es el mismo. El ordenamiento de burbuja se conserva (#4).
+
+**`src/main.py`**: `hayArchivo` → `hay_archivo`; variables `temp2` → `respuesta`,
+`op` → `opcion`, `c/n/p/s` → `codigo/nombre/precio/stock`, `cant` → `cantidad`,
+`cli` → `cliente`, `v` → `venta`, `t` → `total`, `bajos` → `productos_bajos`;
+`par[0], par[1]` → desempaquetado `codigo, unidades`.
+
+`git diff --stat`: 4 archivos de `src/`, 196 inserciones y 172 eliminaciones.
+`tests/`, `pyproject.toml` y `datos_ejemplo.json` sin cambios.
+
+### Justificación
+- **Nombres:** `temp2`, `aux`, `x` o `hacer_cosa` no dicen qué contienen o qué hacen;
+  nombres como `subtotal`, `nuevo_stock` o `formatear_moneda` hacen el código legible
+  sin necesidad de comentarios. Los renombres cumplen PEP 8 (N802, N816).
+- **Constantes:** las reglas de negocio (umbrales, tasas, IVA, prefijo VIP, stock
+  mínimo) estaban como números mágicos repetidos en `registrar_venta`, `cotizar` y
+  `reportes`. Al nombrarlas se documenta su significado y queda un solo punto para
+  cambiarlas, lo que también prepara la extracción de la lógica duplicada en la #4.
+- **Seguridad del cambio:** las constantes tienen exactamente los mismos valores
+  literales y se usan en las mismas posiciones de cada expresión, por lo que la
+  aritmética de punto flotante es idéntica.
+
+### Evidencia (2026-10-09)
+
+```text
+> .\.venv\Scripts\python -m pytest -q
+....................                                                     [100%]
+20 passed in 0.07s
+
+> .\.venv\Scripts\python -m ruff check src --statistics
+3	SIM102	[ ] collapsible-if
+3	SIM115	[ ] open-file-with-context-handler
+2	C901  	[ ] complex-structure
+1	UP015 	[*] redundant-open-modes
+Found 9 errors.
+
+> .\.venv\Scripts\python -m ruff check src --output-format concise
+src\almacen.py:15:15: SIM115 Use a context manager for opening files
+src\almacen.py:29:15: SIM115 Use a context manager for opening files
+src\almacen.py:29:26: UP015 [*] Unnecessary mode argument
+src\gestor.py:98:5: C901 `registrar_venta` is too complex (12 > 10)
+src\gestor.py:138:5: SIM102 Use a single `if` statement instead of nested `if` statements
+src\gestor.py:139:9: SIM102 Use a single `if` statement instead of nested `if` statements
+src\gestor.py:140:13: SIM102 Use a single `if` statement instead of nested `if` statements
+src\main.py:20:5: C901 `menu` is too complex (17 > 10)
+src\reportes.py:91:15: SIM115 Use a context manager for opening files
+Found 9 errors.
+```
+
+#### Caracterización (fuera del repositorio, en el directorio temporal de la sesión)
+
+Scripts: `caracterizar.py` (ejercita las APIs y reportes en memoria y escribe en un
+directorio de trabajo temporal) y `menu_entrada.txt` (entrada guionizada para
+`main.py`, ejecutado con el directorio actual en una carpeta temporal). Ejecución con
+`python -B`, `PYTHONIOENCODING=utf-8` y redirección `cmd /c ... < archivo` para no
+perder caracteres UTF-8.
+
+| Salida | Antes (`4cedd85`) SHA-256 | Después SHA-256 | Resultado |
+|---|---|---|---|
+| `caracterizacion.txt` (59 líneas) | `A1968732D884E01470D103D3EF2475175A616FC538A3B2A1C93175DD929C4EF3` | `A1968732D884E01470D103D3EF2475175A616FC538A3B2A1C93175DD929C4EF3` | Idéntico (`fc /b`: no differences) |
+| `menu.txt` (167 líneas) | `FB264F9C0D47D6A500DFEAFE79C63C738D7A2586CD9C30783C8DAB3FEFC9EFEF` | `FB264F9C0D47D6A500DFEAFE79C63C738D7A2586CD9C30783C8DAB3FEFC9EFEF` | Idéntico (`fc /b`: no differences) |
+| `viejo.csv` | — | — | Idéntico (`fc /b`: no differences) |
+| `datos_ejemplo.json` generado por el menú | — | — | Solo difiere el campo `fecha` (marca de tiempo de cada ejecución: `2026-10-08 23:48:25` vs `2026-10-09 00:06:06`); el resto es igual |
+
+Códigos de salida: 0 en las cuatro ejecuciones; archivos de error (stderr) de 0 bytes.
+
+### Observaciones / errores detectados
+- **SIM108 desapareció sin que se cambiara la estructura.** Ruff no sugiere el operador
+  ternario cuando la línea resultante pasaría de 88 caracteres; con los nombres nuevos
+  (`descuento = subtotal * TASA_DESCUENTO_MEDIO if subtotal >= UMBRAL_DESCUENTO_MEDIO else 0`)
+  quedaría de unos 91. El code smell (`else:` con un `if` anidado) **sigue presente** y se
+  atenderá en la #4. Por eso la reducción real fue de 5 errores (N816, N802×2, SIM103,
+  SIM108) y no de 4 como se había estimado.
+- Durante la caracterización inicial se rechazó un comando de verificación por un error
+  de sintaxis de PowerShell (`Missing closing ')' in expression`); se rehízo con
+  comandos simples y separados (P-07). No afectó a los resultados.
+- `src/__pycache__/` existe, generado por `pytest` (que no usa `-B`); está en
+  `.gitignore` y no forma parte del proyecto.
+- Git avisa que los saltos de línea LF pasarán a CRLF; el contenido no cambia.
 
 **Commit:** *(pendiente de aprobación)*
