@@ -17,71 +17,102 @@ def pedir_numero(mensaje):
             print("Eso no es un numero, intenta de nuevo.")
 
 
+def _mostrar_opciones():
+    print("")
+    print("1) Agregar producto")
+    print("2) Registrar venta")
+    print("3) Cotizar")
+    print("4) Reporte de inventario")
+    print("5) Resumen de ventas")
+    print("6) Mas vendidos")
+    print("7) Alertas de stock bajo")
+    print("8) Guardar y salir")
+
+
+def _opcion_agregar_producto():
+    codigo = input("Codigo: ")
+    nombre = input("Nombre: ")
+    precio = pedir_numero("Precio: ")
+    stock = int(pedir_numero("Stock inicial: "))
+    if gestor.agregarProducto(codigo, nombre, precio, stock):
+        print("Producto agregado.")
+    else:
+        print("Error:", gestor.ultimo_error)
+
+
+def _opcion_registrar_venta():
+    codigo = input("Codigo del producto: ")
+    cantidad = int(pedir_numero("Cantidad: "))
+    cliente = input("Codigo de cliente (enter si no tiene): ")
+    venta = gestor.registrar_venta(codigo, cantidad, cliente)
+    if venta is not None:
+        print(venta["ticket"])
+    else:
+        print("Error:", gestor.ultimo_error)
+
+
+def _opcion_cotizar():
+    codigo = input("Codigo del producto: ")
+    cantidad = int(pedir_numero("Cantidad: "))
+    total = gestor.cotizar(codigo, cantidad)
+    if total is not None:
+        print("Total estimado (con IVA): $" + str(total))
+    else:
+        print("Error:", gestor.ultimo_error)
+
+
+def _opcion_mas_vendidos():
+    for codigo, unidades in reportes.mas_vendidos():
+        print(codigo, "->", unidades, "unidades")
+
+
+def _opcion_stock_bajo():
+    productos_bajos = reportes.productos_stock_bajo()
+    if len(productos_bajos) == 0:
+        print("No hay productos con stock bajo.")
+    else:
+        for producto in productos_bajos:
+            print(
+                "OJO:", producto["nombre"], "solo tiene",
+                producto["stock"], "unidades",
+            )
+
+
+def _guardar_y_salir():
+    almacen.guardar_datos(ARCHIVO)
+    print("Datos guardados. Hasta luego.")
+
+
+# Opciones del menu y la funcion que atiende cada una. La opcion de salida
+# se maneja aparte en menu(); el valor que regresa cada accion se ignora.
+ACCIONES_MENU = {
+    "1": _opcion_agregar_producto,
+    "2": _opcion_registrar_venta,
+    "3": _opcion_cotizar,
+    "4": reportes.reporte_inventario,
+    "5": reportes.resumen_ventas,
+    "6": _opcion_mas_vendidos,
+    "7": _opcion_stock_bajo,
+}
+OPCION_SALIR = "8"
+
+
 def menu():
     print("Bienvenido al gestor de la tienda La Esquina")
     if almacen.hay_archivo(ARCHIVO):
         almacen.cargar_datos(ARCHIVO)
         print("Datos cargados de", ARCHIVO)
     while True:
-        print("")
-        print("1) Agregar producto")
-        print("2) Registrar venta")
-        print("3) Cotizar")
-        print("4) Reporte de inventario")
-        print("5) Resumen de ventas")
-        print("6) Mas vendidos")
-        print("7) Alertas de stock bajo")
-        print("8) Guardar y salir")
+        _mostrar_opciones()
         opcion = input("Opcion: ")
-        if opcion == "1":
-            codigo = input("Codigo: ")
-            nombre = input("Nombre: ")
-            precio = pedir_numero("Precio: ")
-            stock = int(pedir_numero("Stock inicial: "))
-            if gestor.agregarProducto(codigo, nombre, precio, stock):
-                print("Producto agregado.")
-            else:
-                print("Error:", gestor.ultimo_error)
-        elif opcion == "2":
-            codigo = input("Codigo del producto: ")
-            cantidad = int(pedir_numero("Cantidad: "))
-            cliente = input("Codigo de cliente (enter si no tiene): ")
-            venta = gestor.registrar_venta(codigo, cantidad, cliente)
-            if venta is not None:
-                print(venta["ticket"])
-            else:
-                print("Error:", gestor.ultimo_error)
-        elif opcion == "3":
-            codigo = input("Codigo del producto: ")
-            cantidad = int(pedir_numero("Cantidad: "))
-            total = gestor.cotizar(codigo, cantidad)
-            if total is not None:
-                print("Total estimado (con IVA): $" + str(total))
-            else:
-                print("Error:", gestor.ultimo_error)
-        elif opcion == "4":
-            reportes.reporte_inventario()
-        elif opcion == "5":
-            reportes.resumen_ventas()
-        elif opcion == "6":
-            for codigo, unidades in reportes.mas_vendidos():
-                print(codigo, "->", unidades, "unidades")
-        elif opcion == "7":
-            productos_bajos = reportes.productos_stock_bajo()
-            if len(productos_bajos) == 0:
-                print("No hay productos con stock bajo.")
-            else:
-                for producto in productos_bajos:
-                    print(
-                        "OJO:", producto["nombre"], "solo tiene",
-                        producto["stock"], "unidades",
-                    )
-        elif opcion == "8":
-            almacen.guardar_datos(ARCHIVO)
-            print("Datos guardados. Hasta luego.")
+        if opcion == OPCION_SALIR:
+            _guardar_y_salir()
             break
-        else:
+        accion = ACCIONES_MENU.get(opcion)
+        if accion is None:
             print("Opcion no valida.")
+        else:
+            accion()
 
 
 if __name__ == "__main__":

@@ -17,8 +17,8 @@ su justificación y la evidencia real de `pytest` y `ruff check src`.
 | 1  | P-03 (ver abajo) | Higiene: quitar declaraciones `coding` (UP009×4), `import os` sin uso en `reportes` (F401) y ordenar imports de `main` (I001) | Ruido innecesario en Python 3; imports sin uso y desordenados dificultan la lectura | 20 passed | 20 → 14 | `4cedd85` |
 | 2  | P-04 a P-08 (ver abajo) | Renombres PEP 8 (`contador_ventas`, `hay_archivo`, `reporte_viejo_csv`, `formatear_moneda`), variables descriptivas y constantes de negocio (descuentos, VIP, IVA, stock mínimo, formato de fecha) | Nombres que revelan intención; reglas de negocio con un solo punto de definición | 20 passed; caracterización idéntica (SHA-256) | 14 → 9 | `8b3a458` |
 | 3  | P-09 (ver abajo) | `with open(...)` en `guardar_datos`, `cargar_datos` y `reporte_viejo_csv`; quitar el modo `"r"` redundante. `except Exception` se conserva (decisión del usuario) | Cierre garantizado de archivos aunque ocurra una excepción | 20 passed; caracterización idéntica (SHA-256) y JSON igual salvo `fecha` | 9 → 5 | `e57285e` |
-| 4  | P-12, P-13 (ver abajo) | Extraer `_descuento_por_volumen` (compartida por `registrar_venta` y `cotizar`) y `_es_cliente_vip`; aplanar los `if` anidados; `sorted()` en lugar de burbuja en `mas_vendidos` | Una sola fuente de verdad para el descuento; menos anidamiento y complejidad; algoritmo estándar y estable | 20 passed; caracterización y casos límite idénticos (SHA-256) | 5 → 1 | *(pendiente de aprobación)* |
-| 5  |              |                  |               |          |                |        |
+| 4  | P-12, P-13 (ver abajo) | Extraer `_descuento_por_volumen` (compartida por `registrar_venta` y `cotizar`) y `_es_cliente_vip`; aplanar los `if` anidados; `sorted()` en lugar de burbuja en `mas_vendidos` | Una sola fuente de verdad para el descuento; menos anidamiento y complejidad; algoritmo estándar y estable | 20 passed; caracterización y casos límite idénticos (SHA-256) | 5 → 1 | `3cbdccd` |
+| 5  | P-14 a P-20 (ver abajo) | Fase A: `menu()` dividido en una función por opción y un diccionario de despacho. Fase B: `registrar_venta()` dividida en `_validar_venta`, `_calcular_montos` y `_armar_ticket` | Funciones pequeñas con una sola responsabilidad; se elimina el último C901; la venta queda como orquestador legible | 20 passed; 5 salidas de caracterización idénticas (SHA-256) | 1 → 0 (`All checks passed!`) | *(pendiente de aprobación)* |
 
 ---
 
@@ -823,5 +823,263 @@ después, caracterización y menú).
 - `git diff --check` sin problemas. `tests/`, `pyproject.toml` y `datos_ejemplo.json` sin cambios.
 - Git avisa que los saltos de línea LF pasarán a CRLF; el contenido no cambia.
 - Sin errores en la fase.
+
+**Commit:** `3cbdccd` — `refactor: centralizar descuentos y simplificar la lógica VIP y de ranking`
+(autorizado con P-14, registrado en la sección de la #5).
+
+---
+
+## Refactorización #5 — Simplificación de `menu()` y división de `registrar_venta()`
+
+### Prompts utilizados
+
+**P-14 (cierre de la #4):**
+
+> Apruebo la refactorización #4, crea el commit con el mensaje propuesto
+
+**P-15 (elección de la opción (b) y solicitud de plan técnico):**
+
+> Selecciono la **opción (b)** para la Refactorización #5: simplificar `menu()` y dividir `registrar_venta()` en funciones auxiliares.
+>
+> Sin embargo, antes de implementar, quiero revisar y aprobar un plan técnico detallado.
+>
+> **Fase A — Refactorizar `menu()`**
+> - Proponer funciones auxiliares para las opciones del menú.
+> - Evaluar el diccionario de despacho sin alterar el comportamiento de opciones válidas, inválidas y la salida del programa.
+> - Mantener exactamente los textos, prompts, errores y orden de interacción.
+> - Reducir la complejidad ciclomática para eliminar el último C901 de Ruff.
+>
+> **Fase B — Refactorizar `registrar_venta()`**
+> - Proponer `_validar_venta()` y `_armar_ticket()`, o alternativas mejor justificadas.
+> - Mantener la firma pública de `registrar_venta()`.
+> - Preservar el orden de validaciones, tipos de retorno, mensajes de error y efectos sobre `ultimo_error`.
+> - Conservar las operaciones sobre inventario, ventas y contador de folios.
+> - Mantener los cálculos de descuentos e IVA y el formato exacto de los tickets.
+> - No modificar las funciones auxiliares creadas durante la Refactorización #4 salvo que exista una justificación indispensable.
+>
+> **Estrategia de implementación**
+> 1. Presentar primero el plan completo sin modificar archivos.
+> 2. Una vez aprobado, implementar la Fase A y ejecutar las validaciones correspondientes.
+> 3. Implementar la Fase B solamente después de validar la Fase A.
+> 4. Comparar pytest, Ruff, casos límite, caracterización funcional y menú guionizado con las líneas base.
+> 5. Documentar todo en `docs/bitacora.md`, incluyendo el commit #4 `3cbdccd`.
+> 6. No modificar `tests/`, `pyproject.toml` ni `datos_ejemplo.json`.
+> 7. No crear el commit #5 sin mi autorización expresa.
+>
+> **Por ahora trabaja exclusivamente en modo planificación.** Revisa el código actual, identifica riesgos, presenta las funciones y responsabilidades propuestas y detente para mi revisión. No edites archivos ni ejecutes la refactorización todavía.
+
+El plan técnico se presentó en modo planificación y el usuario lo aprobó desde la
+interfaz de Claude Code (aprobación del plan, sin texto adicional).
+
+**P-16 (reanudación de las validaciones de la Fase A tras una interrupción):**
+
+> Continúa desde el punto donde se interrumpieron las validaciones de la Fase A de la Refactorización #5.
+>
+> No repitas la refactorización ni vuelvas a modificar `src/main.py`.
+>
+> Primero comprueba qué validaciones ya terminaron y conserva sus resultados.
+>
+> Retoma únicamente lo pendiente:
+>
+> 1. Confirma el resultado de pytest (20/20).
+> 2. Confirma los tres hashes SHA-256 comparados con sus líneas base.
+> 3. Completa las comparaciones JSON, excluyendo únicamente los valores dinámicos de fecha, y reporta las diferencias reales.
+> 4. Verifica que las ejecuciones terminaron con código 0 y sin errores.
+> 5. Ejecuta `git status` y `git diff --check`.
+> 6. Confirma que solamente `src/main.py` está modificado en esta fase.
+>
+> Presenta un resumen final de la Fase A y detente para mi revisión.
+>
+> No inicies la Fase B, no actualices todavía la bitácora y no realices ningún commit.
+>
+> Mantén las aprobaciones individuales de comandos y ediciones.
+
+**P-17 (aprobación de la Fase A y revisión de `casos_validacion.py`):**
+
+> Apruebo la Fase A de la Refactorización #5. Los resultados de validación son satisfactorios.
+>
+> Autorizo continuar con la preparación de la Fase B, pero antes de modificar `src/gestor.py`:
+>
+> 1. Muéstrame el contenido completo de `casos_validacion.py`.
+> 2. Explica qué escenarios comprueba, especialmente `ultimo_error`, validaciones fallidas, inventario, contador de folios, estructura de ventas y formato de tickets.
+> 3. Conserva los casos especiales, incluido `float("nan")`.
+> 4. Después de mi revisión, solicita autorización para ejecutar el script y establecer la línea base con el código actual.
+> 5. No modifiques todavía `src/gestor.py`.
+> 6. Mantén las autorizaciones individuales y no realices ningún commit.
+>
+> Detente después de presentar el script y espera mi aprobación.
+
+**P-18 (línea base de validación):**
+
+> Autorizo ejecutar casos_validacion.py y establecer la línea base
+
+**P-19 (implementación de la Fase B):**
+
+> Autorizo comenzar la Fase B de la Refactorización #5 conforme al plan aprobado.
+>
+> La línea base de `casos_validacion.py` quedó registrada correctamente, con SHA-256 `3D9310C607F690227650D131D7156345552B6FCAE4BD59E19B64CC6772E0A065`.
+>
+> Autorizo implementar las funciones auxiliares privadas `_validar_venta`, `_calcular_montos` y `_armar_ticket`, preservando exactamente el comportamiento de `registrar_venta()`.
+>
+> Condiciones obligatorias:
+>
+> - Mostrar cada modificación de `src/gestor.py` y solicitar mi aprobación individual.
+> - Conservar el orden exacto de las validaciones y sus condiciones originales, incluido el tratamiento de `float("nan")`.
+> - Preservar `ultimo_error`, las excepciones, el inventario, los folios, las ventas, el orden de las claves y el formato de los tickets.
+> - Mantener los cálculos monetarios y su orden de evaluación.
+> - No modificar `tests/`, `pyproject.toml`, `src/main.py`, `src/reportes.py` ni `src/almacen.py`.
+>
+> Después de implementar, ejecutar pytest, Ruff y comparar byte por byte o mediante SHA-256 las salidas de `casos_validacion.py`, `casos_limite.py`, `caracterizar.py` y ambos menús con sus líneas base.
+>
+> Si alguna comparación falla, detente y analiza la diferencia antes de continuar.
+>
+> No realices todavía el commit #5. Espera mi revisión y autorización final.
+
+**P-20 (documentación):**
+
+> Autorizo actualizar docs/bitacora.md y detente antes del commit
+
+### Fase A — `src/main.py`
+
+**Cambios:** el cuerpo de `menu()` (un `if/elif` de 8 ramas, complejidad 17) se dividió en:
+
+| Función | Responsabilidad |
+|---|---|
+| `_mostrar_opciones()` | Imprime la línea vacía y las 8 opciones |
+| `_opcion_agregar_producto()` | Opción 1 (alta) |
+| `_opcion_registrar_venta()` | Opción 2 (venta e impresión del ticket) |
+| `_opcion_cotizar()` | Opción 3 |
+| `_opcion_mas_vendidos()` | Opción 6 |
+| `_opcion_stock_bajo()` | Opción 7 |
+| `_guardar_y_salir()` | Opción 8 (guardar y mensaje de despedida) |
+
+Las opciones 4 y 5 apuntan directamente a `reportes.reporte_inventario` y
+`reportes.resumen_ventas`. El diccionario `ACCIONES_MENU` asocia cada opción con su
+función y `OPCION_SALIR = "8"` se evalúa **antes** del despacho, así que el valor que regresa
+una acción (por ejemplo, el texto de `reporte_inventario`) nunca decide la salida del ciclo.
+Una opción que no está en el diccionario imprime `"Opcion no valida."`, igual que el `else`
+original. El cuerpo de cada rama se movió sin reordenar líneas ni cambiar textos.
+
+**Riesgos controlados:** coincidencia exacta de opciones (`dict.get` compara la cadena igual
+que `==`), orden de entradas y salidas, variables locales por opción y propagación de
+excepciones (`EOFError`, `int()` de `inf`) sin cambios.
+
+**Validación nueva — `menu_entrada_extra.txt`** (41 líneas, en el directorio temporal): opciones
+`""`, `" 1"`, `"01"`, `"1 "`, `"x"`, `"9"` (todas inválidas); `4`, `5`, `6` y `7` sin datos;
+altas válida, con código vacío y con precio negativo; alerta de stock bajo; venta con stock
+insuficiente; cotización con cantidad 0; venta VIP; reportes con datos; y salida con `8`.
+Su línea base se generó con el código de `3cbdccd` **antes** de editar `main.py`.
+
+**Incidente detectado:** al crear `menu_entrada_extra.txt` con la herramienta de escritura,
+se perdió el espacio final de `"1 "` y apareció una línea vacía de más. Esto habría convertido
+esa línea en la opción `1` válida y desfasado toda la secuencia. Se detectó al revisar el
+archivo línea por línea **antes** de generar la línea base, se reescribió con PowerShell
+(`[System.IO.File]::WriteAllText` con las líneas explícitas) y se verificaron las 41 líneas.
+
+**Interrupción:** durante las comparaciones JSON de la Fase A, el usuario detuvo dos comandos.
+Con P-16 se retomó solo lo pendiente, sin repetir la refactorización ni las validaciones ya
+terminadas.
+
+**Evidencia Fase A (2026-10-11):**
+
+```text
+> .\.venv\Scripts\python -m pytest -q
+20 passed in 0.03s
+
+> .\.venv\Scripts\python -m ruff check src
+All checks passed!
+exit ruff: 0
+```
+
+| Salida | Línea base | Fase A | Resultado |
+|---|---|---|---|
+| Menú original | `FB264F9C0D47D6A500DFEAFE79C63C738D7A2586CD9C30783C8DAB3FEFC9EFEF` | igual | Idéntico |
+| Menú extra | `1BB37F446F107523D0B86E09339F201C0192E44E22B5EC1C3D3010C4BC3D0601` | igual | Idéntico |
+| `caracterizar.py` | `A1968732D884E01470D103D3EF2475175A616FC538A3B2A1C93175DD929C4EF3` | igual | Idéntico |
+| `viejo.csv` | — | — | Idéntico (`fc /b`) |
+| JSON sin líneas `fecha` (script / menú / menú extra) | 241 / 43 / 25 líneas | 241 / 43 / 25 | 0 diferencias |
+
+Códigos de salida 0 y stderr de 0 bytes. Solo `src/main.py` modificado (87 inserciones,
+56 eliminaciones); `git diff --check` sin problemas.
+
+### Fase B — `src/gestor.py`
+
+**Cambios:**
+
+| Función | Responsabilidad | Retorno |
+|---|---|---|
+| `_validar_venta(codigo, cantidad)` | Las 4 validaciones en el mismo orden, con guard clauses; fija `ultimo_error` | El producto de `INVENTARIO` o `None` |
+| `_calcular_montos(precio, cantidad, cliente)` | Subtotal, descuento (con `_descuento_por_volumen` y `_es_cliente_vip`, **sin modificarlas**), impuesto y total, con las mismas expresiones | `(subtotal, descuento, impuesto, total)` |
+| `_armar_ticket(venta, descuento)` | Las mismas 8 concatenaciones del ticket; recibe el descuento **sin redondear** | `str` |
+
+`registrar_venta(codigo, cantidad, cliente="")` conserva su firma y queda como orquestador
+con el mismo orden de efectos: validar → calcular → descontar stock → incrementar folio →
+armar el dict (mismas claves y orden, `fecha` incluida) → ticket → `VENTAS.append` → retorno.
+Su `global` ahora solo declara `contador_ventas`; `ultimo_error` se escribe en `_validar_venta`.
+
+**Decisión técnica clave — negaciones exactas:** cada guard clause niega la condición original
+completa, sin aplicar De Morgan:
+
+```python
+if not (codigo is not None and codigo != ""):    # "codigo vacio"
+if codigo not in INVENTARIO:                      # "producto no existe"
+if not (cantidad is not None and cantidad > 0):  # "cantidad invalida"
+if not INVENTARIO[codigo]["stock"] >= cantidad:  # "stock insuficiente"
+```
+
+Con `cantidad = float("nan")` el código original da `"cantidad invalida"` (`nan > 0` es
+`False`). Una versión con De Morgan (`cantidad is None or cantidad <= 0`) dejaría pasar `nan`
+y respondería `"stock insuficiente"`. `not in` es, por definición del lenguaje, la negación
+exacta de `in`.
+
+**Otros riesgos controlados:** la línea "Descuento" depende del descuento sin redondear
+(`> 0`), como antes; el descuento sigue siendo el entero `0` cuando no aplica; el orden de las
+operaciones con decimales no cambia; una venta fallida no modifica stock, folio ni ventas.
+
+**Validación nueva — `casos_validacion.py`** (en el directorio temporal, solo en memoria):
+orden de validaciones con errores combinados; cantidades `None`, `0`, `-1`, `-0.0`,
+`float("nan")`; stock insuficiente, stock 0 y `float("inf")`; código no hashable (`["A1"]`,
+que lanza `TypeError`); `ultimo_error` que no se limpia tras una venta exitosa; stock, folio y
+número de ventas después de cada llamada; orden de las claves del dict; identidad del objeto
+regresado y del producto; tickets con y sin línea de descuento (volumen, VIP, `cliente=None`,
+VIP con $1000, cantidad 2.5). Su línea base se generó **antes** de editar `gestor.py`.
+
+**Evidencia Fase B (2026-10-11):**
+
+```text
+> .\.venv\Scripts\python -m pytest -q
+20 passed in 0.05s
+
+> .\.venv\Scripts\python -m ruff check src
+All checks passed!
+exit ruff: 0
+```
+
+| Salida | Línea base | Fase B | Resultado |
+|---|---|---|---|
+| `casos_validacion.py` (85 líneas) | `3D9310C607F690227650D131D7156345552B6FCAE4BD59E19B64CC6772E0A065` | igual | Idéntico |
+| `casos_limite.py` | `86A96A0740E91613BC7FF0EB2CFDE7FD9DF023A787AE107C6EE0BC3ACEDB817F` | igual | Idéntico |
+| `caracterizar.py` | `A1968732D884E01470D103D3EF2475175A616FC538A3B2A1C93175DD929C4EF3` | igual | Idéntico |
+| Menú original | `FB264F9C0D47D6A500DFEAFE79C63C738D7A2586CD9C30783C8DAB3FEFC9EFEF` | igual | Idéntico |
+| Menú extra | `1BB37F446F107523D0B86E09339F201C0192E44E22B5EC1C3D3010C4BC3D0601` | igual | Idéntico |
+| `viejo.csv` | — | — | Idéntico (`fc /b`) |
+| JSON sin líneas `fecha` (script / menú / menú extra) | 241 / 43 / 25 líneas | 241 / 43 / 25 | 0 diferencias |
+
+Códigos de salida 0 y stderr de 0 bytes en las cinco ejecuciones.
+
+### Justificación
+- **`menu()`:** una función por opción hace que cada caso se lea y modifique de forma aislada;
+  agregar una opción ya no aumenta la complejidad de `menu()`, solo agrega una entrada al
+  diccionario. Elimina el último C901 (de 17 a 10 o menos; ruff solo lo marca por encima de 10).
+- **`registrar_venta()`:** separa validación, cálculo y presentación (ticket), que antes
+  convivían en una sola función. Cada parte puede entenderse y probarse por separado, y
+  `registrar_venta` describe el flujo completo en pocas líneas.
+
+### Observaciones / errores detectados
+- Todas las comparaciones coincidieron; no hubo diferencias que analizar.
+- Archivos modificados en la #5: `src/main.py` (Fase A) y `src/gestor.py` (Fase B), en total
+  148 inserciones y 93 eliminaciones. `tests/`, `pyproject.toml`, `datos_ejemplo.json`,
+  `src/reportes.py` y `src/almacen.py` sin cambios. `git diff --check` sin problemas.
+- Git avisa que los saltos de línea LF pasarán a CRLF; el contenido no cambia.
 
 **Commit:** *(pendiente de aprobación)*
