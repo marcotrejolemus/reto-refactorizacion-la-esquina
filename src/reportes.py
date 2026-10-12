@@ -57,16 +57,10 @@ def mas_vendidos(n=3):
             )
         else:
             unidades_por_codigo[venta["codigo"]] = venta["cantidad"]
-    ranking = []
-    for codigo in unidades_por_codigo:
-        ranking.append((codigo, unidades_por_codigo[codigo]))
-    # ordenamiento de burbuja (TODO: algun dia usar sorted)
-    for i in range(len(ranking)):
-        for j in range(0, len(ranking) - i - 1):
-            if ranking[j][1] < ranking[j + 1][1]:
-                temporal = ranking[j]
-                ranking[j] = ranking[j + 1]
-                ranking[j + 1] = temporal
+    # sorted es estable: los empates conservan su orden de primera aparicion
+    ranking = sorted(
+        unidades_por_codigo.items(), key=lambda par: par[1], reverse=True
+    )
     return ranking[0:n]
 
 

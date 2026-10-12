@@ -95,6 +95,25 @@ def buscarProducto(texto):
     return encontrados
 
 
+def _descuento_por_volumen(subtotal):
+    """Calcula el descuento por volumen de compra (sin el extra VIP)."""
+    if subtotal >= UMBRAL_DESCUENTO_ALTO:
+        return subtotal * TASA_DESCUENTO_ALTO
+    if subtotal >= UMBRAL_DESCUENTO_MEDIO:
+        return subtotal * TASA_DESCUENTO_MEDIO
+    return 0
+
+
+def _es_cliente_vip(cliente):
+    """Indica si el codigo de cliente empieza con el prefijo VIP."""
+    return (
+        cliente != ""
+        and cliente is not None
+        and len(cliente) >= len(PREFIJO_VIP)
+        and cliente[0:len(PREFIJO_VIP)] == PREFIJO_VIP
+    )
+
+
 def registrar_venta(codigo, cantidad, cliente=""):
     """Registra una venta completa.
 
@@ -125,21 +144,11 @@ def registrar_venta(codigo, cantidad, cliente=""):
     # calculo del subtotal
     subtotal = producto["precio"] * cantidad
     # descuentos por volumen de compra
-    descuento = 0
-    if subtotal >= UMBRAL_DESCUENTO_ALTO:
-        descuento = subtotal * TASA_DESCUENTO_ALTO
-    else:
-        if subtotal >= UMBRAL_DESCUENTO_MEDIO:
-            descuento = subtotal * TASA_DESCUENTO_MEDIO
-        else:
-            descuento = 0
+    descuento = _descuento_por_volumen(subtotal)
     # los clientes cuyo codigo empieza con VIP tienen un extra,
     # pero solo si su compra (ya con descuento) pasa de cierto monto
-    if cliente != "" and cliente is not None:
-        if len(cliente) >= len(PREFIJO_VIP):
-            if cliente[0:len(PREFIJO_VIP)] == PREFIJO_VIP:
-                if subtotal - descuento > MONTO_MINIMO_VIP:
-                    descuento = descuento + subtotal * TASA_DESCUENTO_VIP
+    if _es_cliente_vip(cliente) and subtotal - descuento > MONTO_MINIMO_VIP:
+        descuento = descuento + subtotal * TASA_DESCUENTO_VIP
     base = subtotal - descuento
     impuesto = base * TASA_IVA
     total = round(base + impuesto, 2)
@@ -183,12 +192,7 @@ def cotizar(codigo, cantidad):
         ultimo_error = "cantidad invalida"
         return None
     subtotal = INVENTARIO[codigo]["precio"] * cantidad
-    descuento = 0
-    if subtotal >= UMBRAL_DESCUENTO_ALTO:
-        descuento = subtotal * TASA_DESCUENTO_ALTO
-    else:
-        if subtotal >= UMBRAL_DESCUENTO_MEDIO:
-            descuento = subtotal * TASA_DESCUENTO_MEDIO
+    descuento = _descuento_por_volumen(subtotal)
     base = subtotal - descuento
     total = base + base * TASA_IVA
     return round(total, 2)

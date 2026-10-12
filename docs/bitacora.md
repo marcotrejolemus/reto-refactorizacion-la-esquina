@@ -16,8 +16,8 @@ su justificación y la evidencia real de `pytest` y `ruff check src`.
 | 0  | P-01, P-02 (ver abajo) | Configuración: `CLAUDE.md`, `.claudeignore`, `docs/bitacora.md`, `docs/reflexion.md` | Dar contexto y reglas a la IA antes de tocar código | 20 passed | 20 (sin cambios, `src/` intacto) | `5d6389e` |
 | 1  | P-03 (ver abajo) | Higiene: quitar declaraciones `coding` (UP009×4), `import os` sin uso en `reportes` (F401) y ordenar imports de `main` (I001) | Ruido innecesario en Python 3; imports sin uso y desordenados dificultan la lectura | 20 passed | 20 → 14 | `4cedd85` |
 | 2  | P-04 a P-08 (ver abajo) | Renombres PEP 8 (`contador_ventas`, `hay_archivo`, `reporte_viejo_csv`, `formatear_moneda`), variables descriptivas y constantes de negocio (descuentos, VIP, IVA, stock mínimo, formato de fecha) | Nombres que revelan intención; reglas de negocio con un solo punto de definición | 20 passed; caracterización idéntica (SHA-256) | 14 → 9 | `8b3a458` |
-| 3  | P-09 (ver abajo) | `with open(...)` en `guardar_datos`, `cargar_datos` y `reporte_viejo_csv`; quitar el modo `"r"` redundante. `except Exception` se conserva (decisión del usuario) | Cierre garantizado de archivos aunque ocurra una excepción | 20 passed; caracterización idéntica (SHA-256) y JSON igual salvo `fecha` | 9 → 5 | *(pendiente de aprobación)* |
-| 4  |              |                  |               |          |                |        |
+| 3  | P-09 (ver abajo) | `with open(...)` en `guardar_datos`, `cargar_datos` y `reporte_viejo_csv`; quitar el modo `"r"` redundante. `except Exception` se conserva (decisión del usuario) | Cierre garantizado de archivos aunque ocurra una excepción | 20 passed; caracterización idéntica (SHA-256) y JSON igual salvo `fecha` | 9 → 5 | `e57285e` |
+| 4  | P-12, P-13 (ver abajo) | Extraer `_descuento_por_volumen` (compartida por `registrar_venta` y `cotizar`) y `_es_cliente_vip`; aplanar los `if` anidados; `sorted()` en lugar de burbuja en `mas_vendidos` | Una sola fuente de verdad para el descuento; menos anidamiento y complejidad; algoritmo estándar y estable | 20 passed; caracterización y casos límite idénticos (SHA-256) | 5 → 1 | *(pendiente de aprobación)* |
 | 5  |              |                  |               |          |                |        |
 
 ---
@@ -648,5 +648,180 @@ todos iguales a la línea base. Códigos de salida 0 y stderr de 0 bytes en amba
     resumen final y detente antes del commit. No inicies todavía la Refactorización #4."
   - **P-11:** "Conserva except Exception y crea el commit con el mensaje propuesto"
 - Sin errores en la fase. `tests/`, `pyproject.toml` y `datos_ejemplo.json` sin cambios.
+
+**Commit:** `e57285e` — `refactor: usar gestores de contexto para el manejo de archivos`
+
+---
+
+## Refactorización #4 — Eliminación de cálculos duplicados y simplificación de la lógica de negocio
+
+### Prompts utilizados
+
+**P-12 (autorización inicial y solicitud de propuesta):**
+
+> Autorizo iniciar exclusivamente la **Refactorización #4: eliminación de cálculos duplicados y simplificación de lógica de negocio**, conforme al plan aprobado.
+>
+> **Objetivos:**
+>
+> 1. Extraer `_descuento_por_volumen(subtotal)` para centralizar la lógica duplicada de descuentos entre `registrar_venta()` y `cotizar()`.
+> 2. Extraer `_es_cliente_vip(cliente)` para simplificar las condiciones anidadas de clientes VIP.
+> 3. Sustituir el ordenamiento de burbuja de `mas_vendidos()` por `sorted()`, preservando el orden original cuando existan empates.
+> 4. Corregir estructuralmente los problemas identificados por Ruff, especialmente SIM102 y SIM108, cuando correspondan a esta refactorización.
+>
+> **Restricciones obligatorias:**
+>
+> - Mantener las funciones públicas y sus firmas.
+> - Conservar los cálculos originales de IVA y descuentos, incluyendo el orden de las operaciones con números flotantes.
+> - Preservar los umbrales de descuento de 500 y 1000.
+> - Aplicar el descuento VIP exclusivamente durante el registro de ventas, no durante las cotizaciones.
+> - Mantener la condición estricta de VIP: subtotal después del descuento por volumen mayor que 200.
+> - Conservar el valor entero `0` cuando no existe descuento.
+> - No modificar el formato del ticket, folios, inventario, mensajes de error ni persistencia JSON.
+> - No modificar `tests/` ni `pyproject.toml`.
+> - No comenzar la Refactorización #5.
+>
+> **Validación obligatoria:**
+>
+> 1. Ejecutar pytest y confirmar que las 20 pruebas siguen pasando.
+> 2. Ejecutar Ruff y reportar el número real de errores restantes.
+> 3. Repetir las pruebas de caracterización y comparar los resultados con la línea base.
+> 4. Validar explícitamente los casos límite de descuentos: 499, 500, 999 y 1000, así como los límites VIP de 200 y 201.
+> 5. Verificar empates en el ordenamiento de productos más vendidos.
+> 6. Mostrar `git diff` y explicar las modificaciones.
+> 7. Actualizar `docs/bitacora.md` con el prompt, cambios, justificación y resultados reales.
+> 8. Actualizar el registro de la Refactorización #3 con el commit `e57285e`.
+>
+> **Control de cambios:**
+>
+> Solicita mi autorización antes de aplicar modificaciones.
+>
+> No realices todavía el commit #4. Detente después de las validaciones y espera mi aprobación.
+
+**P-13 (autorización con una precisión sobre `_es_cliente_vip`):**
+
+> Autorizo iniciar la Refactorización #4 con una precisión importante.
+>
+> 1. Autorizo ejecutar `casos_limite.py` sobre el código actual y guardar los resultados como línea base antes de modificar `src/`.
+>
+> 2. Autorizo los cambios propuestos en `src/gestor.py` y `src/reportes.py`: centralización del descuento por volumen, simplificación de la lógica VIP y sustitución del ordenamiento de burbuja por `sorted()`.
+>
+> 3. **No autorizo cambiar el tipo de excepción producido por `_es_cliente_vip()`.** Prefiero que la función auxiliar conserve las condiciones originales y su evaluación en el mismo orden, utilizando `and` para simplificar los condicionales sin alterar el comportamiento existente.
+>
+> Mantén todas las restricciones y validaciones previamente acordadas, incluidas las pruebas de los límites 499, 500, 999, 1000, 200 y 201, los empates, los resultados de pytest y Ruff, y la caracterización funcional.
+>
+> Solicita aprobación individual de las ediciones y comandos. No modifiques los tests existentes ni `pyproject.toml`.
+>
+> Actualiza `docs/bitacora.md`, incluyendo el hash `e57285e` de la Refactorización #3, y detente antes del commit #4 para que pueda revisar los resultados.
+
+### Sugerencia de la IA corregida por el usuario
+La propuesta inicial de `_es_cliente_vip` era `cliente is not None and cliente.startswith(PREFIJO_VIP)`.
+Es equivalente para cualquier texto o `None`, pero con un valor que no es texto (por ejemplo
+`123`) el error cambiaría de `TypeError` (en `len()`) a `AttributeError` (en `.startswith`).
+La IA lo señaló como diferencia teórica y el usuario **rechazó** el cambio (P-13): la función
+conserva las cuatro condiciones originales, en el mismo orden, unidas con `and`.
+
+### Cambios realizados
+
+**`src/gestor.py`**
+- Nueva `_descuento_por_volumen(subtotal)`: `>= UMBRAL_DESCUENTO_ALTO` → `subtotal * TASA_DESCUENTO_ALTO`;
+  `>= UMBRAL_DESCUENTO_MEDIO` → `subtotal * TASA_DESCUENTO_MEDIO`; si no, el **entero** `0`.
+  Usa salidas tempranas con `return` en lugar de `else: if`.
+- Nueva `_es_cliente_vip(cliente)`: `cliente != "" and cliente is not None and
+  len(cliente) >= len(PREFIJO_VIP) and cliente[0:len(PREFIJO_VIP)] == PREFIJO_VIP`
+  (mismas condiciones y mismo orden de evaluación que los cuatro `if` anidados originales).
+- `registrar_venta`: el bloque de descuento (8 líneas) pasa a `descuento = _descuento_por_volumen(subtotal)`
+  y los cuatro `if` anidados de VIP pasan a uno solo:
+  `if _es_cliente_vip(cliente) and subtotal - descuento > MONTO_MINIMO_VIP:`.
+  La operación `descuento + subtotal * TASA_DESCUENTO_VIP` no cambia.
+- `cotizar`: el bloque duplicado de descuento pasa a `descuento = _descuento_por_volumen(subtotal)`.
+  Sigue sin recibir cliente, así que nunca aplica el extra VIP; `base + base * TASA_IVA` sin cambios.
+
+**`src/reportes.py`**
+- `mas_vendidos`: la construcción manual de la lista y la burbuja (11 líneas) pasan a
+  `sorted(unidades_por_codigo.items(), key=lambda par: par[1], reverse=True)`.
+  La acumulación de unidades por código no cambia.
+
+`git diff --stat`: 2 archivos (`src/gestor.py`, `src/reportes.py`). Las funciones nuevas son
+privadas (prefijo `_`); las funciones públicas y sus firmas no cambian.
+
+### Justificación
+- **Duplicación:** la regla de descuento por volumen estaba copiada en `registrar_venta` y
+  `cotizar`; si se cambiaba en un lugar y no en el otro, la cotización dejaría de coincidir
+  con la venta. Ahora hay una sola definición.
+- **Anidamiento:** cuatro `if` anidados para VIP y un `else: if` dificultaban leer la regla;
+  un predicado con nombre (`_es_cliente_vip`) y salidas tempranas la expresan directamente.
+  Esto corrige estructuralmente SIM102×3 y el patrón que antes marcaba SIM108.
+- **Complejidad:** al quitar cinco puntos de decisión de `registrar_venta`, su complejidad
+  ciclomática bajó de 12 a 10 o menos (ruff solo marca C901 por encima de 10), así que
+  desapareció su C901.
+- **Burbuja:** O(n²) y 9 líneas para algo que `sorted` hace en una. `sorted` es estable, y
+  con `reverse=True` también conserva el orden original de los empates; la burbuja solo
+  intercambiaba con `<` estricto, así que también era estable. El resultado es el mismo.
+- **Aritmética:** las constantes y las operaciones se evalúan en el mismo orden que antes, así
+  que los resultados con decimales son idénticos.
+
+### Evidencia (2026-10-11)
+
+```text
+> .\.venv\Scripts\python -m pytest -q
+....................                                                     [100%]
+20 passed in 0.04s
+
+> .\.venv\Scripts\python -m ruff check src --statistics
+1	C901	complex-structure
+Found 1 error.
+
+> .\.venv\Scripts\python -m ruff check src --output-format concise
+src\main.py:20:5: C901 `menu` is too complex (17 > 10)
+Found 1 error.
+```
+
+#### Casos límite (`casos_limite.py`, script nuevo en el directorio temporal, solo en memoria)
+
+Línea base generada **antes** de modificar `src/` (código igual a `e57285e`), y repetida después:
+
+| Salida | SHA-256 antes | SHA-256 después | Resultado |
+|---|---|---|---|
+| `limites.txt` (56 líneas) | `86A96A0740E91613BC7FF0EB2CFDE7FD9DF023A787AE107C6EE0BC3ACEDB817F` | `86A96A0740E91613BC7FF0EB2CFDE7FD9DF023A787AE107C6EE0BC3ACEDB817F` | Idéntico (`fc /b`: no differences) |
+
+Valores verificados (iguales antes y después):
+
+| Caso | Subtotal | Descuento | Total venta | `cotizar` | Tipo de `descuento` |
+|---|---|---|---|---|---|
+| 499 (499×1 y 1×499) | 499.0 | 0 | 578.84 | 578.84 | `int` |
+| 500 (500×1, 1×500, 0.1×5000) | 500.0 | 25.0 | 551.0 | 551.0 | `float` |
+| 999 (999×1 y 1×999) | 999.0 | 49.95 | 1100.9 | 1100.9 | `float` |
+| 1000 (1000×1, 1×1000, 0.1×10000) | 1000.0 | 100.0 | 1044.0 | 1044.0 | `float` |
+| VIP, subtotal 200 | 200.0 | 0 (no aplica: no es `> 200`) | 232.0 | 232.0 | `int` |
+| VIP, subtotal 201 | 201.0 | 4.02 | 228.5 | 233.16 (sin VIP) | `float` |
+| VIP, subtotal 200.01 | 200.01 | 4.0 | 227.37 | 232.01 (sin VIP) | `float` |
+| 201 con `""`, `"vip1"`, `"XVIP"`, `"VI"`, `None` | 201.0 | 0 | 233.16 | 233.16 | `int` |
+| VIP con 500 / 1000 | 500.0 / 1000.0 | 35.0 / 120.0 | 539.4 / 1020.8 | 551.0 / 1044.0 | `float` |
+
+Empates en `mas_vendidos` (X=3, Y=1+2=3, Z=5, W=3, Q=1):
+`n=3` → `[('Z', 5), ('X', 3), ('Y', 3)]`; `n=10` → `[('Z', 5), ('X', 3), ('Y', 3), ('W', 3), ('Q', 1)]`;
+`n=2` → `[('Z', 5), ('X', 3)]`; `n=0` → `[]`; todos empatados (B, A, C con 4) →
+`[('B', 4), ('A', 4), ('C', 4)]`; sin ventas → `[]`. Los empatados conservan su orden de
+primera aparición.
+
+#### Caracterización general (mismos escenarios; línea base de `4cedd85`)
+
+| Salida | SHA-256 línea base | SHA-256 después de la #4 | Resultado |
+|---|---|---|---|
+| `caracterizacion.txt` | `A1968732D884E01470D103D3EF2475175A616FC538A3B2A1C93175DD929C4EF3` | `A1968732D884E01470D103D3EF2475175A616FC538A3B2A1C93175DD929C4EF3` | Idéntico |
+| `menu.txt` | `FB264F9C0D47D6A500DFEAFE79C63C738D7A2586CD9C30783C8DAB3FEFC9EFEF` | `FB264F9C0D47D6A500DFEAFE79C63C738D7A2586CD9C30783C8DAB3FEFC9EFEF` | Idéntico |
+| `viejo.csv` | — | — | Idéntico (`fc /b`: no differences) |
+| `datos.json` (script) | — | — | Sin las líneas `fecha`: 241 = 241 líneas, 0 diferencias |
+| `datos_ejemplo.json` (menú) | — | — | Sin las líneas `fecha`: 43 = 43 líneas, 0 diferencias |
+
+Códigos de salida 0 y stderr de 0 bytes en las cuatro ejecuciones (casos límite antes y
+después, caracterización y menú).
+
+### Observaciones / errores detectados
+- El C901 de `registrar_venta` desapareció como efecto de esta refactorización (estimado en
+  la propuesta). Solo queda el C901 de `menu` (`main.py`), previsto para la #5.
+- `git diff --check` sin problemas. `tests/`, `pyproject.toml` y `datos_ejemplo.json` sin cambios.
+- Git avisa que los saltos de línea LF pasarán a CRLF; el contenido no cambia.
+- Sin errores en la fase.
 
 **Commit:** *(pendiente de aprobación)*
