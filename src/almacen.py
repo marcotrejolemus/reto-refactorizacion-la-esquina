@@ -12,9 +12,8 @@ def guardar_datos(ruta):
     datos["inventario"] = gestor.INVENTARIO
     datos["ventas"] = gestor.VENTAS
     datos["contador"] = gestor.contador_ventas
-    archivo = open(ruta, "w", encoding="utf-8")
-    json.dump(datos, archivo, indent=2, ensure_ascii=False)
-    archivo.close()
+    with open(ruta, "w", encoding="utf-8") as archivo:
+        json.dump(datos, archivo, indent=2, ensure_ascii=False)
     return True
 
 
@@ -26,14 +25,12 @@ def cargar_datos(ruta):
     if not os.path.exists(ruta):
         gestor.ultimo_error = "el archivo no existe"
         return False
-    archivo = open(ruta, "r", encoding="utf-8")
-    try:
-        datos = json.load(archivo)
-    except Exception:
-        archivo.close()
-        gestor.ultimo_error = "archivo corrupto"
-        return False
-    archivo.close()
+    with open(ruta, encoding="utf-8") as archivo:
+        try:
+            datos = json.load(archivo)
+        except Exception:
+            gestor.ultimo_error = "archivo corrupto"
+            return False
     gestor.INVENTARIO.clear()
     for codigo in datos["inventario"]:
         gestor.INVENTARIO[codigo] = datos["inventario"][codigo]

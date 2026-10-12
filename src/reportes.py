@@ -88,13 +88,12 @@ def resumen_ventas():
 def reporte_viejo_csv(ruta):
     # version vieja del reporte que pedia contabilidad, ya no se usa
     # desde que cambiaron de sistema, pero por si las dudas aqui sigue
-    archivo = open(ruta, "w", encoding="utf-8")
-    archivo.write("codigo,nombre,stock\n")
-    for codigo in gestor.INVENTARIO:
-        producto = gestor.INVENTARIO[codigo]
-        archivo.write(
-            producto["codigo"] + "," + producto["nombre"] + ","
-            + str(producto["stock"]) + "\n"
-        )
-    archivo.close()
+    with open(ruta, "w", encoding="utf-8") as archivo:
+        archivo.write("codigo,nombre,stock\n")
+        for codigo in gestor.INVENTARIO:
+            producto = gestor.INVENTARIO[codigo]
+            archivo.write(
+                producto["codigo"] + "," + producto["nombre"] + ","
+                + str(producto["stock"]) + "\n"
+            )
     return ruta

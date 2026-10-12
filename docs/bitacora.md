@@ -15,8 +15,8 @@ su justificación y la evidencia real de `pytest` y `ruff check src`.
 |----|--------------|------------------|---------------|----------|----------------|--------|
 | 0  | P-01, P-02 (ver abajo) | Configuración: `CLAUDE.md`, `.claudeignore`, `docs/bitacora.md`, `docs/reflexion.md` | Dar contexto y reglas a la IA antes de tocar código | 20 passed | 20 (sin cambios, `src/` intacto) | `5d6389e` |
 | 1  | P-03 (ver abajo) | Higiene: quitar declaraciones `coding` (UP009×4), `import os` sin uso en `reportes` (F401) y ordenar imports de `main` (I001) | Ruido innecesario en Python 3; imports sin uso y desordenados dificultan la lectura | 20 passed | 20 → 14 | `4cedd85` |
-| 2  | P-04 a P-08 (ver abajo) | Renombres PEP 8 (`contador_ventas`, `hay_archivo`, `reporte_viejo_csv`, `formatear_moneda`), variables descriptivas y constantes de negocio (descuentos, VIP, IVA, stock mínimo, formato de fecha) | Nombres que revelan intención; reglas de negocio con un solo punto de definición | 20 passed; caracterización idéntica (SHA-256) | 14 → 9 | *(pendiente de aprobación)* |
-| 3  |              |                  |               |          |                |        |
+| 2  | P-04 a P-08 (ver abajo) | Renombres PEP 8 (`contador_ventas`, `hay_archivo`, `reporte_viejo_csv`, `formatear_moneda`), variables descriptivas y constantes de negocio (descuentos, VIP, IVA, stock mínimo, formato de fecha) | Nombres que revelan intención; reglas de negocio con un solo punto de definición | 20 passed; caracterización idéntica (SHA-256) | 14 → 9 | `8b3a458` |
+| 3  | P-09 (ver abajo) | `with open(...)` en `guardar_datos`, `cargar_datos` y `reporte_viejo_csv`; quitar el modo `"r"` redundante. `except Exception` se conserva (decisión del usuario) | Cierre garantizado de archivos aunque ocurra una excepción | 20 passed; caracterización idéntica (SHA-256) y JSON igual salvo `fecha` | 9 → 5 | *(pendiente de aprobación)* |
 | 4  |              |                  |               |          |                |        |
 | 5  |              |                  |               |          |                |        |
 
@@ -501,5 +501,152 @@ Códigos de salida: 0 en las cuatro ejecuciones; archivos de error (stderr) de 0
 - `src/__pycache__/` existe, generado por `pytest` (que no usa `-B`); está en
   `.gitignore` y no forma parte del proyecto.
 - Git avisa que los saltos de línea LF pasarán a CRLF; el contenido no cambia.
+
+**Commit:** `8b3a458` — `refactor: usar nombres descriptivos y constantes para reglas de negocio`
+
+---
+
+## Refactorización #3 — Persistencia y administración segura de archivos
+
+### Prompt utilizado
+
+**P-09:**
+
+> Autorizo iniciar exclusivamente la Refactorización #3: mejora de la persistencia y administración segura de archivos.
+>
+> **Objetivo:**
+> Refactorizar el manejo de archivos en src/almacen.py y src/reportes.py utilizando gestores de contexto `with open()` y mejorando el manejo de excepciones cuando sea seguro.
+>
+> **Instrucciones:**
+>
+> 1. Identifica los bloques que utilizan open() y close() manualmente.
+> 2. Sustitúyelos por gestores de contexto para garantizar el cierre adecuado de archivos.
+> 3. Revisa el uso de `except Exception` y determina qué excepciones específicas pueden utilizarse sin cambiar el comportamiento contratado.
+> 4. Conserva exactamente los mensajes de error, valores de retorno, estructura JSON, indentación, codificación UTF-8 y formato CSV.
+> 5. Mantén las claves JSON originales: inventario, ventas y contador.
+> 6. Conserva las funciones públicas y el contador de folios.
+> 7. No modifiques tests/ ni pyproject.toml.
+> 8. No realices modificaciones fuera de esta refactorización.
+>
+> **Validación obligatoria:**
+>
+> - Ejecutar pytest: deben aprobarse las 20 pruebas.
+> - Ejecutar Ruff y reportar el número real de errores restantes.
+> - Repetir las pruebas de caracterización utilizando los mismos escenarios.
+> - Comparar JSON, CSV, reportes y resultados con la línea base.
+> - Verificar que las únicas diferencias admisibles sean marcas de tiempo generadas dinámicamente.
+> - Mostrar git diff.
+> - Actualizar docs/bitacora.md con los prompts, cambios, justificaciones, resultados y el commit anterior `8b3a458`.
+>
+> **Importante:**
+>
+> No cambies silenciosamente qué errores se capturan o propagan. Si una mejora en el manejo de excepciones modifica el comportamiento anterior, explícame la diferencia y solicita aprobación antes de aplicarla.
+>
+> No realices el commit de la Refactorización #3.
+>
+> Detente al terminar las verificaciones y espera mi aprobación antes de continuar.
+
+### Bloques identificados con `open()`/`close()` manual
+
+| Ubicación (en `8b3a458`) | Función | Problema |
+|---|---|---|
+| `src/almacen.py:15-17` | `guardar_datos` | Si `json.dump` falla, el archivo queda abierto (SIM115). |
+| `src/almacen.py:29-36` | `cargar_datos` | Dos `close()` manuales (uno en el `except`), modo `"r"` redundante (SIM115, UP015). |
+| `src/reportes.py:91-99` | `reporte_viejo_csv` | Si una escritura falla, el archivo queda abierto (SIM115). |
+
+### Análisis de `except Exception` (`src/almacen.py`, `cargar_datos`)
+
+El `try` solo protege a `json.load(archivo)`. El `open()` está **fuera** del `try`, así que
+errores al abrir (permisos, ruta que es un directorio) ya se propagaban y se siguen propagando.
+
+| Excepción que puede lanzar `json.load` | ¿Es `ValueError`? | Hoy (`except Exception`) | Con `except ValueError` |
+|---|---|---|---|
+| `json.JSONDecodeError` (JSON inválido) | Sí | `False` + `"archivo corrupto"` | Igual |
+| `UnicodeDecodeError` (bytes no UTF-8) | Sí | `False` + `"archivo corrupto"` | Igual |
+| `RecursionError` (anidamiento extremo) | No | `False` + `"archivo corrupto"` | **Se propaga** |
+| `OSError` al leer (fallo de disco) | No | `False` + `"archivo corrupto"` | **Se propaga** |
+| `MemoryError` (archivo enorme) | No | `False` + `"archivo corrupto"` | **Se propaga** |
+
+**Decisión:** acotar a `ValueError` cambiaría el comportamiento en los tres últimos casos,
+así que **no se aplicó**. Ruff no marca `except Exception` con las reglas configuradas, así
+que conservarlo no impide llegar a 0 errores.
+
+**Decisión del usuario (P-11):** conservar `except Exception` para no alterar qué errores
+se capturan o se propagan.
+
+### Cambios realizados
+- `guardar_datos`: `open`/`close` → `with open(ruta, "w", encoding="utf-8") as archivo:`.
+  Se conservan `indent=2`, `ensure_ascii=False`, las claves `inventario`, `ventas` y
+  `contador`, y el retorno `True`.
+- `cargar_datos`: `with open(ruta, encoding="utf-8") as archivo:` con el `try/except`
+  dentro; se quitan los dos `close()` manuales y el modo `"r"` (es el modo por omisión).
+  Mismo orden: verificación de existencia → lectura → `"archivo corrupto"` → carga
+  del estado y del contador de folios.
+- `reporte_viejo_csv`: `open`/`close` → `with open(...)`; mismo encabezado, mismas
+  líneas y mismo retorno `ruta`.
+- `git diff --stat`: 2 archivos (`src/almacen.py`, `src/reportes.py`).
+
+### Justificación
+`with` garantiza que el archivo se cierre (y su búfer se escriba en disco) aunque
+ocurra una excepción, sin depender de `close()` manuales repetidos en cada camino.
+Es la forma idiomática en Python y elimina el riesgo de fugas de descriptores.
+
+**Diferencia de comportamiento documentada (no contractual):** si `json.dump` o una
+escritura del CSV fallaran a mitad de camino (por ejemplo, `TypeError` por un valor no
+serializable), antes el archivo quedaba abierto hasta que lo recolectara el recolector
+de basura; ahora se cierra de inmediato. En ambos casos la excepción se propaga igual y
+el archivo queda incompleto. Los retornos y mensajes no cambian.
+
+### Evidencia (2026-10-09)
+
+```text
+> .\.venv\Scripts\python -m pytest -q
+....................                                                     [100%]
+20 passed in 0.06s
+
+> .\.venv\Scripts\python -m ruff check src --statistics
+3	SIM102	collapsible-if
+2	C901  	complex-structure
+Found 5 errors.
+
+> .\.venv\Scripts\python -m ruff check src --output-format concise
+src\gestor.py:98:5: C901 `registrar_venta` is too complex (12 > 10)
+src\gestor.py:138:5: SIM102 Use a single `if` statement instead of nested `if` statements
+src\gestor.py:139:9: SIM102 Use a single `if` statement instead of nested `if` statements
+src\gestor.py:140:13: SIM102 Use a single `if` statement instead of nested `if` statements
+src\main.py:20:5: C901 `menu` is too complex (17 > 10)
+Found 5 errors.
+```
+
+#### Caracterización (mismos escenarios y scripts que en la #2; línea base de `4cedd85`)
+
+| Salida | SHA-256 línea base | SHA-256 después de la #3 | Resultado |
+|---|---|---|---|
+| `caracterizacion.txt` | `A1968732D884E01470D103D3EF2475175A616FC538A3B2A1C93175DD929C4EF3` | `A1968732D884E01470D103D3EF2475175A616FC538A3B2A1C93175DD929C4EF3` | Idéntico |
+| `menu.txt` | `FB264F9C0D47D6A500DFEAFE79C63C738D7A2586CD9C30783C8DAB3FEFC9EFEF` | `FB264F9C0D47D6A500DFEAFE79C63C738D7A2586CD9C30783C8DAB3FEFC9EFEF` | Idéntico |
+| `viejo.csv` | — | — | Idéntico (`fc /b`: no differences) |
+| `datos.json` (guardado por el script, 258 líneas) | — | — | Solo difieren las 17 líneas `fecha`; sin ellas, 241 = 241 líneas y 0 diferencias |
+| `datos_ejemplo.json` (guardado por el menú) | — | — | Solo difieren las 2 líneas `fecha`; sin ellas, 43 = 43 líneas y 0 diferencias |
+
+`caracterizacion.txt` incluye además: la recarga (5 productos y 17 ventas), el folio
+siguiente (18), `"el archivo no existe"` y el JSON corrupto (`False`, `"archivo corrupto"`),
+todos iguales a la línea base. Códigos de salida 0 y stderr de 0 bytes en ambas ejecuciones.
+
+### Observaciones / errores detectados
+- Las únicas diferencias encontradas son las marcas de tiempo `fecha`, generadas con
+  `datetime.now()` en cada venta.
+- `except Exception` se conserva por decisión del usuario (ver arriba).
+- Antes del commit se hizo una revisión final (P-10): archivos modificados,
+  `git diff --check` sin problemas, `pytest` 20 passed y `ruff` 5 errores, ejecutados de nuevo.
+- Prompts posteriores a P-09:
+  - **P-10:** "Gracias. Antes de autorizar el commit de la Refactorización #3, realiza una
+    revisión final. Confirma que únicamente se modificaron: src/almacen.py, src/reportes.py,
+    docs/bitacora.md. Verifica que tests/, pyproject.toml y datos_ejemplo.json siguen sin
+    modificaciones. Confirma los resultados de pytest (20/20), Ruff (5 errores restantes),
+    las comparaciones funcionales y que las únicas diferencias de los JSON corresponden a
+    los valores dinámicos de fecha. Ejecuta git status y git diff --check. Presenta un
+    resumen final y detente antes del commit. No inicies todavía la Refactorización #4."
+  - **P-11:** "Conserva except Exception y crea el commit con el mensaje propuesto"
+- Sin errores en la fase. `tests/`, `pyproject.toml` y `datos_ejemplo.json` sin cambios.
 
 **Commit:** *(pendiente de aprobación)*
