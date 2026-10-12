@@ -1,0 +1,85 @@
+inicio stock={'A1': 10, 'B1': 3, 'Z0': 0} folio=0 ventas=0
+vacio_y_cantidad_0 None ultimo_error='codigo vacio'
+    stock={'A1': 10, 'B1': 3, 'Z0': 0} folio=0 ventas=0
+none_y_none None ultimo_error='codigo vacio'
+    stock={'A1': 10, 'B1': 3, 'Z0': 0} folio=0 ventas=0
+vacio_y_cantidad_ok None ultimo_error='codigo vacio'
+    stock={'A1': 10, 'B1': 3, 'Z0': 0} folio=0 ventas=0
+inexistente_y_cantidad_0 None ultimo_error='producto no existe'
+    stock={'A1': 10, 'B1': 3, 'Z0': 0} folio=0 ventas=0
+inexistente_y_none None ultimo_error='producto no existe'
+    stock={'A1': 10, 'B1': 3, 'Z0': 0} folio=0 ventas=0
+inexistente_y_nan None ultimo_error='producto no existe'
+    stock={'A1': 10, 'B1': 3, 'Z0': 0} folio=0 ventas=0
+cantidad_none None ultimo_error='cantidad invalida'
+    stock={'A1': 10, 'B1': 3, 'Z0': 0} folio=0 ventas=0
+cantidad_0 None ultimo_error='cantidad invalida'
+    stock={'A1': 10, 'B1': 3, 'Z0': 0} folio=0 ventas=0
+cantidad_menos_1 None ultimo_error='cantidad invalida'
+    stock={'A1': 10, 'B1': 3, 'Z0': 0} folio=0 ventas=0
+cantidad_menos_cero None ultimo_error='cantidad invalida'
+    stock={'A1': 10, 'B1': 3, 'Z0': 0} folio=0 ventas=0
+cantidad_nan None ultimo_error='cantidad invalida'
+    stock={'A1': 10, 'B1': 3, 'Z0': 0} folio=0 ventas=0
+stock_mas_1 None ultimo_error='stock insuficiente'
+    stock={'A1': 10, 'B1': 3, 'Z0': 0} folio=0 ventas=0
+stock_cero None ultimo_error='stock insuficiente'
+    stock={'A1': 10, 'B1': 3, 'Z0': 0} folio=0 ventas=0
+cantidad_inf None ultimo_error='stock insuficiente'
+    stock={'A1': 10, 'B1': 3, 'Z0': 0} folio=0 ventas=0
+codigo_lista EXCEPCION TypeError unhashable type: 'list'
+    ultimo_error='stock insuficiente' stock={'A1': 10, 'B1': 3, 'Z0': 0} folio=0 ventas=0
+stock_exacto OK {'folio': 1, 'codigo': 'B1', 'nombre': 'Galletas', 'cantidad': 3, 'subtotal': 15.0, 'descuento': 0, 'impuesto': 2.4, 'total': 17.4, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 1\nGalletas x3\nSubtotal: $15.0\nIVA: $2.4\nTOTAL: $17.4\n'}
+    claves=['folio', 'codigo', 'nombre', 'cantidad', 'subtotal', 'descuento', 'impuesto', 'total', 'cliente', 'fecha', 'ticket']
+    ticket='TIENDA LA ESQUINA\n----------------------------\nFolio: 1\nGalletas x3\nSubtotal: $15.0\nIVA: $2.4\nTOTAL: $17.4\n'
+    es_ultima_venta=True
+    tipo_descuento=int
+    ultimo_error='marca previa'
+    stock={'A1': 10, 'B1': 0, 'Z0': 0} folio=1 ventas=1
+stock_agotado_despues None ultimo_error='stock insuficiente'
+    stock={'A1': 10, 'B1': 0, 'Z0': 0} folio=1 ventas=1
+sin_descuento OK {'folio': 2, 'codigo': 'A1', 'nombre': 'Café', 'cantidad': 1, 'subtotal': 100.0, 'descuento': 0, 'impuesto': 16.0, 'total': 116.0, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 2\nCafé x1\nSubtotal: $100.0\nIVA: $16.0\nTOTAL: $116.0\n'}
+    claves=['folio', 'codigo', 'nombre', 'cantidad', 'subtotal', 'descuento', 'impuesto', 'total', 'cliente', 'fecha', 'ticket']
+    ticket='TIENDA LA ESQUINA\n----------------------------\nFolio: 2\nCafé x1\nSubtotal: $100.0\nIVA: $16.0\nTOTAL: $116.0\n'
+    es_ultima_venta=True
+    tipo_descuento=int
+    ultimo_error='marca previa'
+    stock={'A1': 9, 'B1': 0, 'Z0': 0} folio=2 ventas=2
+cantidad_decimal OK {'folio': 3, 'codigo': 'A1', 'nombre': 'Café', 'cantidad': 2.5, 'subtotal': 250.0, 'descuento': 0, 'impuesto': 40.0, 'total': 290.0, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 3\nCafé x2.5\nSubtotal: $250.0\nIVA: $40.0\nTOTAL: $290.0\n'}
+    claves=['folio', 'codigo', 'nombre', 'cantidad', 'subtotal', 'descuento', 'impuesto', 'total', 'cliente', 'fecha', 'ticket']
+    ticket='TIENDA LA ESQUINA\n----------------------------\nFolio: 3\nCafé x2.5\nSubtotal: $250.0\nIVA: $40.0\nTOTAL: $290.0\n'
+    es_ultima_venta=True
+    tipo_descuento=int
+    ultimo_error='marca previa'
+    stock={'A1': 6.5, 'B1': 0, 'Z0': 0} folio=3 ventas=3
+descuento_volumen OK {'folio': 4, 'codigo': 'C1', 'nombre': 'Cafetera', 'cantidad': 6, 'subtotal': 600.0, 'descuento': 30.0, 'impuesto': 91.2, 'total': 661.2, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 4\nCafetera x6\nSubtotal: $600.0\nDescuento: -$30.0\nIVA: $91.2\nTOTAL: $661.2\n'}
+    claves=['folio', 'codigo', 'nombre', 'cantidad', 'subtotal', 'descuento', 'impuesto', 'total', 'cliente', 'fecha', 'ticket']
+    ticket='TIENDA LA ESQUINA\n----------------------------\nFolio: 4\nCafetera x6\nSubtotal: $600.0\nDescuento: -$30.0\nIVA: $91.2\nTOTAL: $661.2\n'
+    es_ultima_venta=True
+    tipo_descuento=float
+    ultimo_error='marca previa'
+    stock={'A1': 6.5, 'B1': 0, 'Z0': 0, 'C1': 44} folio=4 ventas=4
+descuento_vip OK {'folio': 5, 'codigo': 'C1', 'nombre': 'Cafetera', 'cantidad': 6, 'subtotal': 600.0, 'descuento': 42.0, 'impuesto': 89.28, 'total': 647.28, 'cliente': 'VIP007', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 5\nCafetera x6\nSubtotal: $600.0\nDescuento: -$42.0\nIVA: $89.28\nTOTAL: $647.28\n'}
+    claves=['folio', 'codigo', 'nombre', 'cantidad', 'subtotal', 'descuento', 'impuesto', 'total', 'cliente', 'fecha', 'ticket']
+    ticket='TIENDA LA ESQUINA\n----------------------------\nFolio: 5\nCafetera x6\nSubtotal: $600.0\nDescuento: -$42.0\nIVA: $89.28\nTOTAL: $647.28\n'
+    es_ultima_venta=True
+    tipo_descuento=float
+    ultimo_error='marca previa'
+    stock={'A1': 6.5, 'B1': 0, 'Z0': 0, 'C1': 38} folio=5 ventas=5
+cliente_none OK {'folio': 6, 'codigo': 'C1', 'nombre': 'Cafetera', 'cantidad': 6, 'subtotal': 600.0, 'descuento': 30.0, 'impuesto': 91.2, 'total': 661.2, 'cliente': None, 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 6\nCafetera x6\nSubtotal: $600.0\nDescuento: -$30.0\nIVA: $91.2\nTOTAL: $661.2\n'}
+    claves=['folio', 'codigo', 'nombre', 'cantidad', 'subtotal', 'descuento', 'impuesto', 'total', 'cliente', 'fecha', 'ticket']
+    ticket='TIENDA LA ESQUINA\n----------------------------\nFolio: 6\nCafetera x6\nSubtotal: $600.0\nDescuento: -$30.0\nIVA: $91.2\nTOTAL: $661.2\n'
+    es_ultima_venta=True
+    tipo_descuento=float
+    ultimo_error='marca previa'
+    stock={'A1': 6.5, 'B1': 0, 'Z0': 0, 'C1': 32} folio=6 ventas=6
+vip_alto OK {'folio': 7, 'codigo': 'C1', 'nombre': 'Cafetera', 'cantidad': 10, 'subtotal': 1000.0, 'descuento': 120.0, 'impuesto': 140.8, 'total': 1020.8, 'cliente': 'VIP', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 7\nCafetera x10\nSubtotal: $1000.0\nDescuento: -$120.0\nIVA: $140.8\nTOTAL: $1020.8\n'}
+    claves=['folio', 'codigo', 'nombre', 'cantidad', 'subtotal', 'descuento', 'impuesto', 'total', 'cliente', 'fecha', 'ticket']
+    ticket='TIENDA LA ESQUINA\n----------------------------\nFolio: 7\nCafetera x10\nSubtotal: $1000.0\nDescuento: -$120.0\nIVA: $140.8\nTOTAL: $1020.8\n'
+    es_ultima_venta=True
+    tipo_descuento=float
+    ultimo_error='marca previa'
+    stock={'A1': 6.5, 'B1': 0, 'Z0': 0, 'C1': 22} folio=7 ventas=7
+producto_a1_mismo_objeto True
+folios [1, 2, 3, 4, 5, 6, 7]
+fin stock={'A1': 6.5, 'B1': 0, 'Z0': 0, 'C1': 22} folio=7 ventas=7

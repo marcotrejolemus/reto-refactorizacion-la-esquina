@@ -1,0 +1,56 @@
+cotizar V499 578.84
+venta V499 {'folio': 1, 'codigo': 'V499', 'nombre': 'Prod V499', 'cantidad': 1, 'subtotal': 499.0, 'descuento': 0, 'impuesto': 79.84, 'total': 578.84, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 1\nProd V499 x1\nSubtotal: $499.0\nIVA: $79.84\nTOTAL: $578.84\n'} tipo_descuento=int
+cotizar V500 551.0
+venta V500 {'folio': 2, 'codigo': 'V500', 'nombre': 'Prod V500', 'cantidad': 1, 'subtotal': 500.0, 'descuento': 25.0, 'impuesto': 76.0, 'total': 551.0, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 2\nProd V500 x1\nSubtotal: $500.0\nDescuento: -$25.0\nIVA: $76.0\nTOTAL: $551.0\n'} tipo_descuento=float
+cotizar V999 1100.9
+venta V999 {'folio': 3, 'codigo': 'V999', 'nombre': 'Prod V999', 'cantidad': 1, 'subtotal': 999.0, 'descuento': 49.95, 'impuesto': 151.85, 'total': 1100.9, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 3\nProd V999 x1\nSubtotal: $999.0\nDescuento: -$49.95\nIVA: $151.85\nTOTAL: $1100.9\n'} tipo_descuento=float
+cotizar V1000 1044.0
+venta V1000 {'folio': 4, 'codigo': 'V1000', 'nombre': 'Prod V1000', 'cantidad': 1, 'subtotal': 1000.0, 'descuento': 100.0, 'impuesto': 144.0, 'total': 1044.0, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 4\nProd V1000 x1\nSubtotal: $1000.0\nDescuento: -$100.0\nIVA: $144.0\nTOTAL: $1044.0\n'} tipo_descuento=float
+cotizar F499 578.84
+venta F499 {'folio': 5, 'codigo': 'F499', 'nombre': 'Prod F499', 'cantidad': 499, 'subtotal': 499.0, 'descuento': 0, 'impuesto': 79.84, 'total': 578.84, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 5\nProd F499 x499\nSubtotal: $499.0\nIVA: $79.84\nTOTAL: $578.84\n'} tipo_descuento=int
+cotizar F500 551.0
+venta F500 {'folio': 6, 'codigo': 'F500', 'nombre': 'Prod F500', 'cantidad': 500, 'subtotal': 500.0, 'descuento': 25.0, 'impuesto': 76.0, 'total': 551.0, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 6\nProd F500 x500\nSubtotal: $500.0\nDescuento: -$25.0\nIVA: $76.0\nTOTAL: $551.0\n'} tipo_descuento=float
+cotizar F999 1100.9
+venta F999 {'folio': 7, 'codigo': 'F999', 'nombre': 'Prod F999', 'cantidad': 999, 'subtotal': 999.0, 'descuento': 49.95, 'impuesto': 151.85, 'total': 1100.9, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 7\nProd F999 x999\nSubtotal: $999.0\nDescuento: -$49.95\nIVA: $151.85\nTOTAL: $1100.9\n'} tipo_descuento=float
+cotizar F1000 1044.0
+venta F1000 {'folio': 8, 'codigo': 'F1000', 'nombre': 'Prod F1000', 'cantidad': 1000, 'subtotal': 1000.0, 'descuento': 100.0, 'impuesto': 144.0, 'total': 1044.0, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 8\nProd F1000 x1000\nSubtotal: $1000.0\nDescuento: -$100.0\nIVA: $144.0\nTOTAL: $1044.0\n'} tipo_descuento=float
+cotizar D0.1x5000 551.0
+venta D0.1x5000 {'folio': 9, 'codigo': 'D0.1x5000', 'nombre': 'Prod D0.1x5000', 'cantidad': 5000, 'subtotal': 500.0, 'descuento': 25.0, 'impuesto': 76.0, 'total': 551.0, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 9\nProd D0.1x5000 x5000\nSubtotal: $500.0\nDescuento: -$25.0\nIVA: $76.0\nTOTAL: $551.0\n'} tipo_descuento=float
+cotizar D0.1x10000 1044.0
+venta D0.1x10000 {'folio': 10, 'codigo': 'D0.1x10000', 'nombre': 'Prod D0.1x10000', 'cantidad': 10000, 'subtotal': 1000.0, 'descuento': 100.0, 'impuesto': 144.0, 'total': 1044.0, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 10\nProd D0.1x10000 x10000\nSubtotal: $1000.0\nDescuento: -$100.0\nIVA: $144.0\nTOTAL: $1044.0\n'} tipo_descuento=float
+cotizar D33.33x30 1101.89
+venta D33.33x30 {'folio': 11, 'codigo': 'D33.33x30', 'nombre': 'Prod D33.33x30', 'cantidad': 30, 'subtotal': 999.9, 'descuento': 50.0, 'impuesto': 151.98, 'total': 1101.89, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 11\nProd D33.33x30 x30\nSubtotal: $999.9\nDescuento: -$50.0\nIVA: $151.98\nTOTAL: $1101.89\n'} tipo_descuento=float
+cotizar D49.99x20 1101.78
+venta D49.99x20 {'folio': 12, 'codigo': 'D49.99x20', 'nombre': 'Prod D49.99x20', 'cantidad': 20, 'subtotal': 999.8, 'descuento': 49.99, 'impuesto': 151.97, 'total': 1101.78, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 12\nProd D49.99x20 x20\nSubtotal: $999.8\nDescuento: -$49.99\nIVA: $151.97\nTOTAL: $1101.78\n'} tipo_descuento=float
+cotizar D99.99x10 1101.89
+venta D99.99x10 {'folio': 13, 'codigo': 'D99.99x10', 'nombre': 'Prod D99.99x10', 'cantidad': 10, 'subtotal': 999.9, 'descuento': 50.0, 'impuesto': 151.98, 'total': 1101.89, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 13\nProd D99.99x10 x10\nSubtotal: $999.9\nDescuento: -$50.0\nIVA: $151.98\nTOTAL: $1101.89\n'} tipo_descuento=float
+cotizar P200 232.0
+venta P200 cliente='VIP1' {'folio': 1, 'codigo': 'P200', 'nombre': 'Prod P200', 'cantidad': 1, 'subtotal': 200.0, 'descuento': 0, 'impuesto': 32.0, 'total': 232.0, 'cliente': 'VIP1', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 1\nProd P200 x1\nSubtotal: $200.0\nIVA: $32.0\nTOTAL: $232.0\n'} tipo_descuento=int
+cotizar P201 233.16
+venta P201 cliente='VIP1' {'folio': 2, 'codigo': 'P201', 'nombre': 'Prod P201', 'cantidad': 1, 'subtotal': 201.0, 'descuento': 4.02, 'impuesto': 31.52, 'total': 228.5, 'cliente': 'VIP1', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 2\nProd P201 x1\nSubtotal: $201.0\nDescuento: -$4.02\nIVA: $31.52\nTOTAL: $228.5\n'} tipo_descuento=float
+cotizar P200b 232.0
+venta P200b cliente='VIP' {'folio': 3, 'codigo': 'P200b', 'nombre': 'Prod P200b', 'cantidad': 200, 'subtotal': 200.0, 'descuento': 0, 'impuesto': 32.0, 'total': 232.0, 'cliente': 'VIP', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 3\nProd P200b x200\nSubtotal: $200.0\nIVA: $32.0\nTOTAL: $232.0\n'} tipo_descuento=int
+cotizar P201b 233.16
+venta P201b cliente='VIP' {'folio': 4, 'codigo': 'P201b', 'nombre': 'Prod P201b', 'cantidad': 201, 'subtotal': 201.0, 'descuento': 4.02, 'impuesto': 31.52, 'total': 228.5, 'cliente': 'VIP', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 4\nProd P201b x201\nSubtotal: $201.0\nDescuento: -$4.02\nIVA: $31.52\nTOTAL: $228.5\n'} tipo_descuento=float
+cotizar P200.01 232.01
+venta P200.01 cliente='VIP9' {'folio': 5, 'codigo': 'P200.01', 'nombre': 'Prod P200.01', 'cantidad': 1, 'subtotal': 200.01, 'descuento': 4.0, 'impuesto': 31.36, 'total': 227.37, 'cliente': 'VIP9', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 5\nProd P200.01 x1\nSubtotal: $200.01\nDescuento: -$4.0\nIVA: $31.36\nTOTAL: $227.37\n'} tipo_descuento=float
+cotizar P201n 233.16
+venta P201n cliente='' {'folio': 6, 'codigo': 'P201n', 'nombre': 'Prod P201n', 'cantidad': 1, 'subtotal': 201.0, 'descuento': 0, 'impuesto': 32.16, 'total': 233.16, 'cliente': '', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 6\nProd P201n x1\nSubtotal: $201.0\nIVA: $32.16\nTOTAL: $233.16\n'} tipo_descuento=int
+cotizar P201m 233.16
+venta P201m cliente='vip1' {'folio': 7, 'codigo': 'P201m', 'nombre': 'Prod P201m', 'cantidad': 1, 'subtotal': 201.0, 'descuento': 0, 'impuesto': 32.16, 'total': 233.16, 'cliente': 'vip1', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 7\nProd P201m x1\nSubtotal: $201.0\nIVA: $32.16\nTOTAL: $233.16\n'} tipo_descuento=int
+cotizar P201s 233.16
+venta P201s cliente='XVIP' {'folio': 8, 'codigo': 'P201s', 'nombre': 'Prod P201s', 'cantidad': 1, 'subtotal': 201.0, 'descuento': 0, 'impuesto': 32.16, 'total': 233.16, 'cliente': 'XVIP', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 8\nProd P201s x1\nSubtotal: $201.0\nIVA: $32.16\nTOTAL: $233.16\n'} tipo_descuento=int
+cotizar P201c 233.16
+venta P201c cliente='VI' {'folio': 9, 'codigo': 'P201c', 'nombre': 'Prod P201c', 'cantidad': 1, 'subtotal': 201.0, 'descuento': 0, 'impuesto': 32.16, 'total': 233.16, 'cliente': 'VI', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 9\nProd P201c x1\nSubtotal: $201.0\nIVA: $32.16\nTOTAL: $233.16\n'} tipo_descuento=int
+cotizar P201x 233.16
+venta P201x cliente=None {'folio': 10, 'codigo': 'P201x', 'nombre': 'Prod P201x', 'cantidad': 1, 'subtotal': 201.0, 'descuento': 0, 'impuesto': 32.16, 'total': 233.16, 'cliente': None, 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 10\nProd P201x x1\nSubtotal: $201.0\nIVA: $32.16\nTOTAL: $233.16\n'} tipo_descuento=int
+cotizar P500 551.0
+venta P500 cliente='VIP' {'folio': 11, 'codigo': 'P500', 'nombre': 'Prod P500', 'cantidad': 1, 'subtotal': 500.0, 'descuento': 35.0, 'impuesto': 74.4, 'total': 539.4, 'cliente': 'VIP', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 11\nProd P500 x1\nSubtotal: $500.0\nDescuento: -$35.0\nIVA: $74.4\nTOTAL: $539.4\n'} tipo_descuento=float
+cotizar P1000 1044.0
+venta P1000 cliente='VIP' {'folio': 12, 'codigo': 'P1000', 'nombre': 'Prod P1000', 'cantidad': 1, 'subtotal': 1000.0, 'descuento': 120.0, 'impuesto': 140.8, 'total': 1020.8, 'cliente': 'VIP', 'ticket': 'TIENDA LA ESQUINA\n----------------------------\nFolio: 12\nProd P1000 x1\nSubtotal: $1000.0\nDescuento: -$120.0\nIVA: $140.8\nTOTAL: $1020.8\n'} tipo_descuento=float
+mas_vendidos n=3 [('Z', 5), ('X', 3), ('Y', 3)]
+mas_vendidos n=10 [('Z', 5), ('X', 3), ('Y', 3), ('W', 3), ('Q', 1)]
+mas_vendidos n=2 [('Z', 5), ('X', 3)]
+mas_vendidos n=0 []
+mas_vendidos todos_empatados [('B', 4), ('A', 4), ('C', 4)]
+mas_vendidos sin_ventas []

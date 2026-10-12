@@ -1,0 +1,167 @@
+Bienvenido al gestor de la tienda La Esquina
+
+1) Agregar producto
+2) Registrar venta
+3) Cotizar
+4) Reporte de inventario
+5) Resumen de ventas
+6) Mas vendidos
+7) Alertas de stock bajo
+8) Guardar y salir
+Opcion: Codigo: Nombre: Precio: Eso no es un numero, intenta de nuevo.
+Precio: Stock inicial: Producto agregado.
+
+1) Agregar producto
+2) Registrar venta
+3) Cotizar
+4) Reporte de inventario
+5) Resumen de ventas
+6) Mas vendidos
+7) Alertas de stock bajo
+8) Guardar y salir
+Opcion: Codigo: Nombre: Precio: Stock inicial: Error: el producto ya existe
+
+1) Agregar producto
+2) Registrar venta
+3) Cotizar
+4) Reporte de inventario
+5) Resumen de ventas
+6) Mas vendidos
+7) Alertas de stock bajo
+8) Guardar y salir
+Opcion: Codigo: Nombre: Precio: Stock inicial: Producto agregado.
+
+1) Agregar producto
+2) Registrar venta
+3) Cotizar
+4) Reporte de inventario
+5) Resumen de ventas
+6) Mas vendidos
+7) Alertas de stock bajo
+8) Guardar y salir
+Opcion: Codigo del producto: Cantidad: Codigo de cliente (enter si no tiene): TIENDA LA ESQUINA
+----------------------------
+Folio: 1
+Café x6
+Subtotal: $600.0
+Descuento: -$42.0
+IVA: $89.28
+TOTAL: $647.28
+
+
+1) Agregar producto
+2) Registrar venta
+3) Cotizar
+4) Reporte de inventario
+5) Resumen de ventas
+6) Mas vendidos
+7) Alertas de stock bajo
+8) Guardar y salir
+Opcion: Codigo del producto: Cantidad: Eso no es un numero, intenta de nuevo.
+Cantidad: Codigo de cliente (enter si no tiene): TIENDA LA ESQUINA
+----------------------------
+Folio: 2
+Café x2
+Subtotal: $200.0
+IVA: $32.0
+TOTAL: $232.0
+
+
+1) Agregar producto
+2) Registrar venta
+3) Cotizar
+4) Reporte de inventario
+5) Resumen de ventas
+6) Mas vendidos
+7) Alertas de stock bajo
+8) Guardar y salir
+Opcion: Codigo del producto: Cantidad: Codigo de cliente (enter si no tiene): Error: producto no existe
+
+1) Agregar producto
+2) Registrar venta
+3) Cotizar
+4) Reporte de inventario
+5) Resumen de ventas
+6) Mas vendidos
+7) Alertas de stock bajo
+8) Guardar y salir
+Opcion: Codigo del producto: Cantidad: Total estimado (con IVA): $2088.0
+
+1) Agregar producto
+2) Registrar venta
+3) Cotizar
+4) Reporte de inventario
+5) Resumen de ventas
+6) Mas vendidos
+7) Alertas de stock bajo
+8) Guardar y salir
+Opcion: Codigo del producto: Cantidad: Error: producto no existe
+
+1) Agregar producto
+2) Registrar venta
+3) Cotizar
+4) Reporte de inventario
+5) Resumen de ventas
+6) Mas vendidos
+7) Alertas de stock bajo
+8) Guardar y salir
+Opcion: ===== INVENTARIO =====
+A1 | Café | $100.0 | stock: 42
+B1 | Galletas | $10.0 | stock: 3  <-- STOCK BAJO
+Valor total del inventario: $4230.0
+
+
+1) Agregar producto
+2) Registrar venta
+3) Cotizar
+4) Reporte de inventario
+5) Resumen de ventas
+6) Mas vendidos
+7) Alertas de stock bajo
+8) Guardar y salir
+Opcion: ===== RESUMEN DE VENTAS =====
+Folio 1: Café x6 = $647.28
+Folio 2: Café x2 = $232.0
+Numero de ventas: 2
+Total del dia: $879.28
+
+
+1) Agregar producto
+2) Registrar venta
+3) Cotizar
+4) Reporte de inventario
+5) Resumen de ventas
+6) Mas vendidos
+7) Alertas de stock bajo
+8) Guardar y salir
+Opcion: A1 -> 8 unidades
+
+1) Agregar producto
+2) Registrar venta
+3) Cotizar
+4) Reporte de inventario
+5) Resumen de ventas
+6) Mas vendidos
+7) Alertas de stock bajo
+8) Guardar y salir
+Opcion: OJO: Galletas solo tiene 3 unidades
+
+1) Agregar producto
+2) Registrar venta
+3) Cotizar
+4) Reporte de inventario
+5) Resumen de ventas
+6) Mas vendidos
+7) Alertas de stock bajo
+8) Guardar y salir
+Opcion: Opcion no valida.
+
+1) Agregar producto
+2) Registrar venta
+3) Cotizar
+4) Reporte de inventario
+5) Resumen de ventas
+6) Mas vendidos
+7) Alertas de stock bajo
+8) Guardar y salir
+Opcion: Datos guardados. Hasta luego.
