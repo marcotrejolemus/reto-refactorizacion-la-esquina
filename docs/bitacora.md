@@ -1,7 +1,7 @@
 # Bitácora de refactorización
 
-**Nombre:** Marco Trejo
-**Matrícula:** *(por completar)*
+**Nombre:** Marco Antonio Trejo Lemus
+**Matrícula:** *(pendiente de confirmación institucional)*
 **Fecha de inicio:** 2026-10-08
 **Rama:** `refactorizacion` → `main`
 **Herramienta:** Claude Code (modelo Claude Opus 5.5)
@@ -18,7 +18,7 @@ su justificación y la evidencia real de `pytest` y `ruff check src`.
 | 2  | P-04 a P-08 (ver abajo) | Renombres PEP 8 (`contador_ventas`, `hay_archivo`, `reporte_viejo_csv`, `formatear_moneda`), variables descriptivas y constantes de negocio (descuentos, VIP, IVA, stock mínimo, formato de fecha) | Nombres que revelan intención; reglas de negocio con un solo punto de definición | 20 passed; caracterización idéntica (SHA-256) | 14 → 9 | `8b3a458` |
 | 3  | P-09 (ver abajo) | `with open(...)` en `guardar_datos`, `cargar_datos` y `reporte_viejo_csv`; quitar el modo `"r"` redundante. `except Exception` se conserva (decisión del usuario) | Cierre garantizado de archivos aunque ocurra una excepción | 20 passed; caracterización idéntica (SHA-256) y JSON igual salvo `fecha` | 9 → 5 | `e57285e` |
 | 4  | P-12, P-13 (ver abajo) | Extraer `_descuento_por_volumen` (compartida por `registrar_venta` y `cotizar`) y `_es_cliente_vip`; aplanar los `if` anidados; `sorted()` en lugar de burbuja en `mas_vendidos` | Una sola fuente de verdad para el descuento; menos anidamiento y complejidad; algoritmo estándar y estable | 20 passed; caracterización y casos límite idénticos (SHA-256) | 5 → 1 | `3cbdccd` |
-| 5  | P-14 a P-20 (ver abajo) | Fase A: `menu()` dividido en una función por opción y un diccionario de despacho. Fase B: `registrar_venta()` dividida en `_validar_venta`, `_calcular_montos` y `_armar_ticket` | Funciones pequeñas con una sola responsabilidad; se elimina el último C901; la venta queda como orquestador legible | 20 passed; 5 salidas de caracterización idénticas (SHA-256) | 1 → 0 (`All checks passed!`) | *(pendiente de aprobación)* |
+| 5  | P-14 a P-20 (ver abajo) | Fase A: `menu()` dividido en una función por opción y un diccionario de despacho. Fase B: `registrar_venta()` dividida en `_validar_venta`, `_calcular_montos` y `_armar_ticket` | Funciones pequeñas con una sola responsabilidad; se elimina el último C901; la venta queda como orquestador legible | 20 passed; 5 salidas de caracterización idénticas (SHA-256) | 1 → 0 (`All checks passed!`) | `bc0687c` |
 
 ---
 
@@ -1082,4 +1082,21 @@ Códigos de salida 0 y stderr de 0 bytes en las cinco ejecuciones.
   `src/reportes.py` y `src/almacen.py` sin cambios. `git diff --check` sin problemas.
 - Git avisa que los saltos de línea LF pasarán a CRLF; el contenido no cambia.
 
-**Commit:** *(pendiente de aprobación)*
+**Commit:** `bc0687c` — `refactor: dividir menu y registrar_venta en funciones con una sola responsabilidad`
+
+---
+
+## Cierre
+
+| | Inicio (`a43153d`) | Final (`bc0687c`) |
+|---|---|---|
+| `pytest -q` | 20 passed | 20 passed (después de cada refactorización) |
+| `ruff check src` | 20 errores | 0 (`All checks passed!`) |
+| Comportamiento observable | — | Salidas de caracterización idénticas (SHA-256) en cada paso |
+| `tests/`, `pyproject.toml`, `datos_ejemplo.json` | — | Sin cambios |
+
+- Resumen con el formato de la plantilla y reflexión final: [`BITACORA.md`](../BITACORA.md).
+- Scripts, entradas y salidas de referencia para reproducir las validaciones:
+  [`docs/evidencia/`](evidencia/README.md).
+- Código heredado conservado por decisión del usuario: `calcular_descuento_viejo`,
+  `exportar_txt` (comentado) y `MODO_DEBUG` en `src/gestor.py`.
